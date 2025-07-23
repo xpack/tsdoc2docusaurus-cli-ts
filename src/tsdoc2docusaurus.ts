@@ -11,6 +11,11 @@
 
 import path from 'path'
 import fs from 'fs/promises'
+import {
+  SidebarCategory,
+  SidebarCategoryItem,
+  SidebarDocItem,
+} from './docusaurus/types.js'
 // import util from 'util'
 
 // This script is a tool to rewrite some parts of the docs generated
@@ -28,18 +33,106 @@ const outputFolderPath = `${docsRelativeFolderPath}/${apiRelativeFolderPath}`
 
 const baseUrl = '/doxygen2docusaurus-ts/'
 
+interface EntryPoint {
+  kind: string
+
+  inputFilePath: string
+  permalink: string
+
+  frontMatterSlug: string
+  frontMatterTitle: string
+
+  sidebarLabel: string
+  sidebarId: string
+
+  outputFilePath: string
+
+  // Map of array of compounds, by kind (Class, Interface, ...)
+  compoundsMap: Map<string, Compound[]>
+  data: any
+}
+
+interface Compound {
+  kind: string
+
+  inputFilePath: string
+  permalink: string
+
+  frontMatterSlug: string
+  frontMatterTitle: string
+
+  sidebarLabel: string
+  sidebarId: string
+
+  outputFilePath: string
+
+  membersMap: Map<string, Member[]> // Map of array of members, by kind (Constructor, Property, ...)
+  data: any
+}
+
+interface Member {
+  kind: string
+
+  inputFilePath: string
+  permalink: string
+
+  frontMatterSlug: string
+  frontMatterTitle: string
+
+  sidebarLabel: string
+  sidebarId: string
+
+  outputFilePath: string
+  isHidden?: boolean
+
+  data: any
+}
+
+interface FrontMatter {
+  slug: string
+  title: string
+}
+
+interface TopIndex {
+  kind: string
+
+  inputFilePath: string
+  permalink: string
+
+  frontMatterSlug: string
+  frontMatterTitle: string
+
+  sidebarLabel: string
+  sidebarId: string
+
+  outputFilePath: string
+}
+
+type EntryPointsSet = Set<EntryPoint>
+
+interface ApiViewModel {
+  topIndex: TopIndex
+  entryPointsSet: EntryPointsSet
+  permalinksMapByPath: Map<string, string>
+}
 // ----------------------------------------------------------------------------
 
-async function parseApiDataModel() {
+async function parseApiDataModel(): Promise<any | null> {
   // Parse the API JSON file
-  let apiDataModel = null
+  let apiDataModel: any = null
   try {
     const apiJsonContent = await fs.readFile(apiJsonFilePath, 'utf8')
     apiDataModel = JSON.parse(apiJsonContent)
   } catch (err) {
-    console.warn(
-      `Could not parse API JSON file ${apiJsonFilePath}: ${err.message}`
-    )
+    if (err instanceof Error) {
+      console.warn(
+        `Could not parse API JSON file ${apiJsonFilePath}: ${err.message}`
+      )
+    } else {
+      console.warn(
+        `Could not parse API JSON file ${apiJsonFilePath}: Unknown error`
+      )
+    }
     return null
   }
 
@@ -48,13 +141,13 @@ async function parseApiDataModel() {
 
 // ----------------------------------------------------------------------------
 
-function prepareApiViewModel(apiDataModel) {
-  const entryPointsSet = new Set()
+function prepareApiViewModel(apiDataModel: any) {
+  const entryPointsSet = new Set<EntryPoint>()
 
   // Key paths do not start with '/', permalinks are absolute (start with baseUrl).
-  const permalinksMapByPath = new Map()
+  const permalinksMapByPath = new Map<string, string>()
 
-  const topIndex = {
+  const topIndex: TopIndex = {
     kind: 'TopIndex',
 
     inputFilePath: 'index.md',
@@ -93,7 +186,7 @@ function prepareApiViewModel(apiDataModel) {
 
     const outputFilePath = `${entryPointId}.md`
 
-    const entryPoint = {
+    const entryPoint: EntryPoint = {
       kind: entryPointKind,
 
       inputFilePath,
@@ -139,7 +232,7 @@ function prepareApiViewModel(apiDataModel) {
 
       const outputFilePath = `${entryPointId}/${compoundCategoryId}/${compoundId}.md`
 
-      const compound = {
+      const compound: Compound = {
         kind: compoundKind,
 
         inputFilePath,
@@ -234,7 +327,7 @@ function prepareApiViewModel(apiDataModel) {
 
           const outputFilePath = `${entryPointId}/${compoundCategoryId}/${compoundId}/${escapedMemberId}.md`
 
-          const member = {
+          const member: Member = {
             kind: memberKind,
 
             inputFilePath,
@@ -280,12 +373,16 @@ function prepareApiViewModel(apiDataModel) {
 
 // ----------------------------------------------------------------------------
 
-async function readInputFileLines(filePath) {
+async function readInputFileLines(filePath: string): Promise<string[]> {
   const inputData = await fs.readFile(filePath, 'utf8')
   return inputData.split('\n').map((line) => line.trimEnd())
 }
 
-async function writeOutputFile(filePath, frontMatter, lines) {
+async function writeOutputFile(
+  filePath: string,
+  frontMatter: FrontMatter,
+  lines: string[]
+) {
   const header = [
     '---',
     // '',
@@ -309,7 +406,10 @@ async function writeOutputFile(filePath, frontMatter, lines) {
   console.log(`Writing ${filePath}...`)
 }
 
-function patchLines(lines, permalinksMapByPath) {
+function patchLines(
+  lines: string[],
+  permalinksMapByPath: Map<string, string>
+): string[] {
   const outLines = []
 
   let firstH2 = false
@@ -334,7 +434,10 @@ function patchLines(lines, permalinksMapByPath) {
   return outLines
 }
 
-function patchPermalinks(line, permalinksMapByPath) {
+function patchPermalinks(
+  line: string,
+  permalinksMapByPath: Map<string, string>
+) {
   let patchedLine = line
 
   const matches = [...line.matchAll(/\]\([^\(<>\)]*\)/g)]
@@ -361,7 +464,7 @@ function patchPermalinks(line, permalinksMapByPath) {
   return patchedLine
 }
 
-async function generateMdFiles(apiViewModel) {
+async function generateMdFiles(apiViewModel: ApiViewModel): Promise<void> {
   const entryPointsSet = apiViewModel.entryPointsSet
 
   {
@@ -477,12 +580,12 @@ async function generateMdFiles(apiViewModel) {
 
 // ----------------------------------------------------------------------------
 
-function generateSidebarCategory(apiViewModel) {
+function generateSidebarCategory(apiViewModel: ApiViewModel) {
   const entryPointsSet = apiViewModel.entryPointsSet
 
   const topIndex = apiViewModel.topIndex
 
-  const sidebarTopCategory = {
+  const sidebarTopCategory: SidebarCategory = {
     type: 'category',
     label: topIndex.sidebarLabel,
     link: {
@@ -494,7 +597,7 @@ function generateSidebarCategory(apiViewModel) {
   }
 
   for (const entryPoint of entryPointsSet) {
-    const entryPointCategory = {
+    const entryPointCategory: SidebarCategory = {
       type: 'category',
       label: entryPoint.sidebarLabel,
       link: {
@@ -508,7 +611,7 @@ function generateSidebarCategory(apiViewModel) {
 
     for (const [kind, compoundsArray] of entryPoint.compoundsMap) {
       const compoundCategoryLabel = pluralise(kind)
-      const kindCategory = {
+      const kindCategory: SidebarCategoryItem = {
         type: 'category',
         label: compoundCategoryLabel,
         collapsed: true,
@@ -517,7 +620,7 @@ function generateSidebarCategory(apiViewModel) {
       entryPointCategory.items.push(kindCategory)
 
       for (const compound of compoundsArray) {
-        const compoundCategory = {
+        const compoundCategory: SidebarCategoryItem = {
           type: 'category',
           label: compound.sidebarLabel,
           link: {
@@ -537,7 +640,7 @@ function generateSidebarCategory(apiViewModel) {
                 continue
               }
 
-              const memberDoc = {
+              const memberDoc: SidebarDocItem = {
                 type: 'doc',
                 id: `${member.sidebarId}`,
                 label: member.sidebarLabel,
@@ -555,8 +658,8 @@ function generateSidebarCategory(apiViewModel) {
 
 // ----------------------------------------------------------------------------
 
-function pluralise(name) {
-  const plurals = {
+function pluralise(name: string): string {
+  const plurals: Record<string, string> = {
     Class: 'Classes',
     Interface: 'Interfaces',
     Function: 'Functions',
@@ -590,15 +693,21 @@ export async function main() {
   const sidebar = generateSidebarCategory(apiViewModel)
   // console.log(util.inspect(sidebar, { compact: false, depth: 999 }));
 
-  // Write the sidebar to file
+  // Write the sidebar to file.
   try {
     console.log(`Writing sidebar file ${sidebarFilePath}`)
     const sidebarJson = JSON.stringify(sidebar, null, 2)
     await fs.writeFile(sidebarFilePath, sidebarJson)
-  } catch (err) {
-    console.error(
-      `Could not write sidebar file ${sidebarFilePath}: ${err.message}`
-    )
+  } catch (err: unknown) {
+    if (err instanceof Error) {
+      console.error(
+        `Could not write sidebar file ${sidebarFilePath}: ${err.message}`
+      )
+    } else {
+      console.error(
+        `Could not write sidebar file ${sidebarFilePath}: Unknown error`
+      )
+    }
     return 1
   }
 
@@ -610,16 +719,5 @@ export async function main() {
 
   return 0
 }
-
-// ----------------------------------------------------------------------------
-
-main()
-
-// try {
-//   process.exit(main())
-// } catch (err) {
-//   console.error(`Error in convert-docs.cjs: ${err.message}`);
-//   process.exit(1);
-// }
 
 // ----------------------------------------------------------------------------

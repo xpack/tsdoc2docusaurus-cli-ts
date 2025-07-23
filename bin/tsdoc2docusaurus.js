@@ -36,17 +36,18 @@
 
 // ----------------------------------------------------------------------------
 
-import { main } from '../dist/cli/main.js'
+// import { main } from '../dist/cli/main.js'
+import { main } from '../dist/tsdoc2docusaurus.js'
 
 // ----------------------------------------------------------------------------
 
 try {
   process.exit(await main(process.argv))
 } catch(err) {
-    // If the main function throws an error, it will be caught here.
-    // The error message will be printed to the console.
-    console.error('An error occurred while running tsdoc2docusaurus:', error)
-    process.exit(1) // Exit with a non-zero status code to indicate failure.
+  // If the main function throws an error, it will be caught here.
+  // The error message will be printed to the console.
+  console.error('An error occurred while running tsdoc2docusaurus:', err)
+  process.exit(1) // Exit with a non-zero status code to indicate failure.
 }
 
 // ----------------------------------------------------------------------------
