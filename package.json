@@ -1,0 +1,114 @@
+{
+  "name": "@xpack/tsdoc2docusaurus",
+  "version": "1.0.0",
+  "description": "A CLI application to convert TSDoc files into Docusaurus documentation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "typings": "./dist/tsdoc2docusaurus.d.ts",
+  "bin": {
+    "tsdoc2docusaurus": "./bin/tsdoc2docusaurus.js"
+  },
+  "scripts": {
+    "generate-top-commons": "bash node_modules/@xpack/npm-packages-helper/maintenance-scripts/generate-top-commons.sh --xpack",
+    "compile-watch": "tsc --build --verbose --watch src",
+    "compile": "tsc --build --verbose src",
+    "prettier": "prettier src --write",
+    "fix": "eslint --fix",
+    "dev-cycle": "npm run fix && npm run compile && npm run test",
+    "npm-install": "npm install",
+    "npm-link-helpers": "npm link @xpack/npm-packages-helper @xpack/docusaurus-template-liquid",
+    "npm-link": "npm link",
+    "npm-outdated": "npm outdated",
+    "npm-update": "npm update",
+    "npm-pack": "npm pack",
+    "npm-version-patch": "npm version patch",
+    "npm-version-minor": "npm version minor",
+    "postversion": "git push origin --all && git push origin --tags",
+    "git-log": "git log --pretty='%cd * %h %s' --date=short",
+    "lint": "eslint",
+    "prepare": "npm run prettier && npm run lint && npm run compile",
+    "pretest-coverage": "npm run lint",
+    "pretest-no-coverage": "npm run lint",
+    "test-coverage": "tap --show-full-coverage",
+    "test-no-coverage": "tap --disable-coverage",
+    "tap": "tap --reporter=tap",
+    "test": "echo 'No tests defined'",
+    "prepublishOnly": "npm run lint && npm run test",
+    "postpublish": "git push origin --follow-tags",
+    "clean": "del-cli cjs 'tests/**/cjs' 'src/**/*.d.ts' 'src/**/*.d.ts.map' 'src/**/*.js' 'src/**/*.js.map' 'tests/**/*.d.ts' 'tests/**/*.d.ts.map' 'tests/**/*.js' 'tests/**/*.js.map' '**/tsconfig.tsbuildinfo' .nyc_output coverage",
+    "deep-clean": "npm run clean && rm -rf node_modules package-lock.json",
+    "dumpconf": "env | sort | uniq",
+    "show-versions": "echo $(which node) $(node --version) && echo $(which npm) $(npm --version)"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xpack/tsdoc2docusaurus-ts.git"
+  },
+  "author": {
+    "name": "Liviu Ionescu",
+    "email": "ilg@livius.net",
+    "url": "https://github.com/ilg-ul"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/xpack/tsdoc2docusaurus-ts/issues"
+  },
+  "homepage": "https://xpack.github.io/tsdoc2docusaurus-ts/",
+  "dependencies": {},
+  "devDependencies": {
+    "@tsconfig/node20": "^20.1.6",
+    "@types/node": "^24.0.14",
+    "@types/tap": "^15.0.12",
+    "del-cli": "^6.0.0",
+    "json": "^11.0.0",
+    "liquidjs": "^10.19.1",
+    "tap": "^21.0.1",
+    "ts-node": "^10.9.2",
+    "standard": "^17.1.2",
+    "ts-standard": "^12.0.2",
+    "prettier": "3.6.2",
+    "typescript": "^5.8.3",
+    "eslint": "^9.31.0",
+    "eslint-config-love": "^121.0.0"
+  },
+  "tap": {
+    "files": [
+      "tests/tap/*.ts"
+    ],
+    "reporter": "base"
+  },
+  "eslintConfig": {
+    "rules": {
+      "max-len": [
+        "error",
+        80,
+        {
+          "ignoreUrls": true
+        }
+      ]
+    }
+  },
+  "ts-standard": {
+    "ignore": [
+      "/website/",
+      "**/*.d.ts",
+      "**/*.js"
+    ]
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "topConfig": {
+    "descriptiveName": "A CLI application to convert TSDoc files into Docusaurus documentation",
+    "permalinkName": "tsdoc2docusaurus-ts",
+    "skipCiTests": "true",
+    "hasCli": "true",
+    "useEslint": "true"
+  },
+  "engines": {
+    "node": " >=20.0.0"
+  }
+}
