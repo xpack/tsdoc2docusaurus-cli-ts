@@ -25,7 +25,6 @@ import type { CliOptions } from '../options.js'
 
 // ----------------------------------------------------------------------------
 
-// eslint-disable-next-line complexity
 export function prepareViewModel({
   dataModel,
   options,
@@ -106,6 +105,7 @@ export function prepareViewModel({
 
       // Map of array of compounds, by kind (Class, Interface, ...)
       compoundsMap: new Map(),
+
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       data: entryPointDataModel,
     }
@@ -173,6 +173,7 @@ export function prepareViewModel({
 
         // Map of array of members, by kind (Constructor, Property, ...)
         membersMap: new Map(),
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         data: compoundDataModel,
       }
@@ -205,34 +206,28 @@ export function prepareViewModel({
           const memberKind: string = memberDataModel.kind
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
           const memberLabel: string = memberDataModel.name
-
+          let memberTitle = memberLabel
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-          let originalMemberId: string | undefined = memberDataModel.name
+          let originalMemberId: string = memberDataModel.name
 
           let memberId: string | undefined = undefined
-          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-          if (memberLabel !== undefined) {
+
+          if (memberKind === 'Constructor') {
+            memberId = 'constructor'
+            memberTitle = '(constructor)'
+            originalMemberId = '_constructor_'
+          } else {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            if (memberDataModel.name !== undefined) {
+              continue
+            }
+
             originalMemberId = memberLabel
               .replaceAll(/[^a-zA-Z0-9]/g, '_')
               .toLowerCase()
 
             memberId = originalMemberId
           }
-
-          // const memberCategoryId = pluralise(memberKind).toLowerCase()
-          // console.log(memberCategoryId)
-
-          let memberTitle = memberLabel
-
-          if (memberKind === 'Constructor') {
-            memberId = 'constructor'
-            memberTitle = '(constructor)'
-            originalMemberId = '_constructor_'
-          }
-
-          // if (originalMemberId === undefined) {
-          //   console.log(memberDataModel)
-          // }
 
           // eslint-disable-next-line max-len
           const inputFilePath = `${entryPointId}.${compoundId}.${originalMemberId}.md`
@@ -263,7 +258,7 @@ export function prepareViewModel({
           // Docusaurus ignores files that start with an underscore.
           // Surround with $ if the original name contains non-alphanumeric
           // characters
-          if (originalMemberId?.startsWith('_') ?? false) {
+          if (originalMemberId.startsWith('_')) {
             escapedMemberId = `$${escapedMemberId}$`
           }
 
@@ -299,9 +294,9 @@ export function prepareViewModel({
             data: memberDataModel,
           }
 
-          if (memberId === undefined) {
-            member.isHidden = true
-          }
+          // if (memberId === undefined) {
+          //   member.isHidden = true
+          // }
 
           let membersArray = compound.membersMap.get(member.kind)
           if (membersArray === undefined) {

@@ -20,21 +20,25 @@ import { DataModel } from './types.js'
 
 export async function parseDataModel(
   options: CliOptions
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 ): Promise<DataModel | null> {
   // Parse the API JSON file
   let dataModel: DataModel = null
   try {
     console.log(`Reading ${options.apiJsonInputFilePath}...`)
     const jsonContent = await fs.readFile(options.apiJsonInputFilePath, 'utf8')
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     dataModel = JSON.parse(jsonContent)
   } catch (err) {
     if (err instanceof Error) {
       console.warn(
-        `Could not parse API JSON file ${options.apiJsonInputFilePath}: ${err.message}`
+        `Could not parse API JSON file ${options.apiJsonInputFilePath}: ` +
+          err.message
       )
     } else {
       console.warn(
-        `Could not parse API JSON file ${options.apiJsonInputFilePath}: Unknown error`
+        `Could not parse API JSON file ${options.apiJsonInputFilePath}: ` +
+          'Unknown error'
       )
     }
     return null

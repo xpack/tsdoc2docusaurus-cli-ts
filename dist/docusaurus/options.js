@@ -37,7 +37,6 @@ export async function parseOptions(argv) {
     program.option('--id <name>', 'id, for multi-configurations');
     program.parse(argv);
     const programOptions = program.opts();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
     const id = programOptions.id;
     let configurationOptions = undefined;
     try {
@@ -48,6 +47,7 @@ export async function parseOptions(argv) {
         const pkgJson = JSON.parse(pkgJsonRaw);
         const multiConfigurations = pkgJson.config?.tsdoc2docusaurus ?? pkgJson.tsdoc2docusaurus;
         configurationOptions = selectMultiConfiguration(multiConfigurations, id);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
     }
     catch (err) {
         // try to get the configuration from doxygen2docusaurus.json.
@@ -90,11 +90,7 @@ function getInstanceDefaultOptions(id) {
 function selectMultiConfiguration(multiConfigurations, id) {
     let configurationOptions = undefined;
     if (id !== undefined) {
-        // eslint-disable-next-line @typescript-eslint/prefer-destructuring
-        configurationOptions =
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-            multiConfigurations[id];
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        configurationOptions = multiConfigurations[id];
         if (configurationOptions !== undefined) {
             configurationOptions.id = id;
         }

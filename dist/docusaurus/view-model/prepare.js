@@ -11,7 +11,6 @@
 import { pluralise } from '../generate.js';
 // import util from 'node:util'
 // ----------------------------------------------------------------------------
-// eslint-disable-next-line complexity
 export function prepareViewModel({ dataModel, options, }) {
     const entryPointsSet = new Set();
     // Key paths do not start with '/', permalinks are absolute
@@ -35,14 +34,14 @@ export function prepareViewModel({ dataModel, options, }) {
         if (options.debug) {
             console.log(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            entryPointDataModel.kind, 
+            entryPointDataModel.kind,
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             entryPointDataModel.canonicalReference);
         }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const entryPointKind = entryPointDataModel.kind;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const entryPointLabel = 
+        const entryPointLabel =
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         entryPointDataModel.canonicalReference.replace(/[!]$/, '');
         const entryPointId = entryPointLabel.replace(/^.*\//, '').toLowerCase();
@@ -74,9 +73,9 @@ export function prepareViewModel({ dataModel, options, }) {
             if (options.debug) {
                 console.log(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                compoundDataModel.kind, 
+                compoundDataModel.kind,
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                compoundDataModel.name, 
+                compoundDataModel.name,
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 compoundDataModel.canonicalReference);
             }
@@ -129,11 +128,11 @@ export function prepareViewModel({ dataModel, options, }) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 for (const memberDataModel of compoundDataModel.members) {
                     if (options.debug) {
-                        console.log('  ', 
+                        console.log('  ',
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                        memberDataModel.kind, 
+                        memberDataModel.kind,
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                        memberDataModel.name, 
+                        memberDataModel.name,
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         memberDataModel.canonicalReference);
                     }
@@ -141,27 +140,25 @@ export function prepareViewModel({ dataModel, options, }) {
                     const memberKind = memberDataModel.kind;
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
                     const memberLabel = memberDataModel.name;
+                    let memberTitle = memberLabel;
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
                     let originalMemberId = memberDataModel.name;
                     let memberId = undefined;
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    if (memberLabel !== undefined) {
-                        originalMemberId = memberLabel
-                            .replaceAll(/[^a-zA-Z0-9]/g, '_')
-                            .toLowerCase();
-                        memberId = originalMemberId;
-                    }
-                    // const memberCategoryId = pluralise(memberKind).toLowerCase()
-                    // console.log(memberCategoryId)
-                    let memberTitle = memberLabel;
                     if (memberKind === 'Constructor') {
                         memberId = 'constructor';
                         memberTitle = '(constructor)';
                         originalMemberId = '_constructor_';
                     }
-                    // if (originalMemberId === undefined) {
-                    //   console.log(memberDataModel)
-                    // }
+                    else {
+                        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+                        if (memberDataModel.name === undefined) {
+                            continue;
+                        }
+                        originalMemberId = memberLabel
+                            .replaceAll(/[^a-zA-Z0-9]/g, '_')
+                            .toLowerCase();
+                        memberId = originalMemberId;
+                    }
                     // eslint-disable-next-line max-len
                     const inputFilePath = `${entryPointId}.${compoundId}.${originalMemberId}.md`;
                     const permalink = `${outputBaseUrl}/${entryPointId}/` +
@@ -185,7 +182,7 @@ export function prepareViewModel({ dataModel, options, }) {
                     // Docusaurus ignores files that start with an underscore.
                     // Surround with $ if the original name contains non-alphanumeric
                     // characters
-                    if (originalMemberId?.startsWith('_') ?? false) {
+                    if (originalMemberId.startsWith('_')) {
                         escapedMemberId = `$${escapedMemberId}$`;
                     }
                     const frontMatterTitle = memberKind !== 'Constructor'
@@ -208,9 +205,9 @@ export function prepareViewModel({ dataModel, options, }) {
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                         data: memberDataModel,
                     };
-                    if (memberId === undefined) {
-                        member.isHidden = true;
-                    }
+                    // if (memberId === undefined) {
+                    //   member.isHidden = true
+                    // }
                     let membersArray = compound.membersMap.get(member.kind);
                     if (membersArray === undefined) {
                         membersArray = [];

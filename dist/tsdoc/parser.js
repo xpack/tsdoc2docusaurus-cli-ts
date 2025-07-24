@@ -11,20 +11,25 @@
 // ----------------------------------------------------------------------------
 import fs from 'node:fs/promises';
 // ----------------------------------------------------------------------------
-export async function parseDataModel(options) {
+export async function parseDataModel(options
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
+) {
     // Parse the API JSON file
     let dataModel = null;
     try {
         console.log(`Reading ${options.apiJsonInputFilePath}...`);
         const jsonContent = await fs.readFile(options.apiJsonInputFilePath, 'utf8');
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         dataModel = JSON.parse(jsonContent);
     }
     catch (err) {
         if (err instanceof Error) {
-            console.warn(`Could not parse API JSON file ${options.apiJsonInputFilePath}: ${err.message}`);
+            console.warn(`Could not parse API JSON file ${options.apiJsonInputFilePath}: ` +
+                err.message);
         }
         else {
-            console.warn(`Could not parse API JSON file ${options.apiJsonInputFilePath}: Unknown error`);
+            console.warn(`Could not parse API JSON file ${options.apiJsonInputFilePath}: ` +
+                'Unknown error');
         }
         return null;
     }

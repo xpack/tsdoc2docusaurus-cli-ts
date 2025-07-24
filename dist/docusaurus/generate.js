@@ -11,6 +11,7 @@
 // ----------------------------------------------------------------------------
 import fs from 'node:fs/promises';
 import path from 'node:path';
+import assert from 'node:assert';
 // ----------------------------------------------------------------------------
 async function readInputFileLines(filePath) {
     const inputData = await fs.readFile(filePath, 'utf8');
@@ -73,7 +74,6 @@ function patchPermalinks(line, permalinksMapByPath) {
     if (matches.length > 0) {
         // console.log(matches)
         for (const match of matches) {
-            // eslint-disable-next-line @typescript-eslint/prefer-destructuring
             const link = match[0];
             // Remove the leading `](` and trailing `)`
             const linkPath = link.slice(2, -1);
@@ -82,6 +82,7 @@ function patchPermalinks(line, permalinksMapByPath) {
                 const relativePath = linkPath.slice(2);
                 if (permalinksMapByPath.has(relativePath)) {
                     const permalink = permalinksMapByPath.get(relativePath);
+                    assert(permalink !== undefined);
                     // console.log(relativePath, '->', permalink)
                     patchedLine = patchedLine.replace(link, `](${permalink})`);
                     // console.log(patchedLine)
@@ -99,7 +100,6 @@ export async function generateMdFiles({ viewModel, options, }) {
     if (!options.verbose) {
         console.log('Writing .md files...');
     }
-    // eslint-disable-next-line @typescript-eslint/prefer-destructuring
     const inputFolderPath = options.apiMarkdownInputFolderPath;
     const outputFolderPath = `${options.docsFolderPath}/${options.apiFolderPath}`;
     {
@@ -152,14 +152,13 @@ export async function generateMdFiles({ viewModel, options, }) {
                     options,
                 });
                 // --------------------------------------------------------------------
-                /* eslint-disable max-depth */
                 if (compound.membersMap.size > 0) {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     for (const [memberKind, membersArray] of compound.membersMap) {
                         for (const member of membersArray) {
-                            if (member.isHidden === true) {
-                                continue;
-                            }
+                            // if (member.isHidden === true) {
+                            //   continue
+                            // }
                             // console.log(
                             //   `      ${member.label} ${member.name} ${member.id}`
                             // )
@@ -178,7 +177,6 @@ export async function generateMdFiles({ viewModel, options, }) {
                         }
                     }
                 }
-                /* eslint-enable max-depth */
             }
         }
     }
@@ -232,19 +230,18 @@ function generateSidebarCategory(viewModel) {
                     items: [],
                 };
                 kindCategory.items.push(compoundCategory);
-                /* eslint-disable max-depth */
                 if (compound.membersMap.size > 0) {
                     // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     for (const [memberKind, membersArray] of compound.membersMap) {
                         for (const member of membersArray) {
                             // Explicitly handle nullable boolean for isHidden
-                            if (member.isHidden === true) {
-                                // console.warn(
-                                //   `Skipping member without name in ${compoundLabel}: ` +
-                                //   `${member.data.canonicalReference}`
-                                // );
-                                continue;
-                            }
+                            // if (member.isHidden === true) {
+                            // console.warn(
+                            //   `Skipping member without name in ${compoundLabel}: ` +
+                            //   `${member.data.canonicalReference}`
+                            // );
+                            //  continue
+                            // }
                             const memberDoc = {
                                 type: 'doc',
                                 id: member.sidebarId,
@@ -254,7 +251,6 @@ function generateSidebarCategory(viewModel) {
                         }
                     }
                 }
-                /* eslint-enable max-depth */
             }
         }
     }
@@ -284,7 +280,6 @@ export async function generateSidebar({ viewModel, options, }) {
     const sidebar = generateSidebarCategory(viewModel);
     // console.log(util.inspect(sidebar, { compact: false, depth: 999 }));
     // Write the sidebar to file.
-    // eslint-disable-next-line @typescript-eslint/prefer-destructuring
     const sidebarFilePath = options.sidebarCategoryFilePath;
     try {
         console.log(`Writing sidebar file ${sidebarFilePath}`);

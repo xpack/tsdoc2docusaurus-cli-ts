@@ -9,15 +9,15 @@
  * be obtained from https://opensource.org/licenses/MIT.
  */
 // ----------------------------------------------------------------------------
-export function formatDuration(n) {
-    if (n < 1000) {
-        return `${n} ms`;
+export function formatDuration(millis) {
+    if (millis < 1000) {
+        return `${String(millis)} ms`;
     }
-    else if (n < 100000) {
-        return `${(n / 1000).toFixed(1)} sec`;
+    else if (millis < 100000) {
+        return `${(millis / 1000).toFixed(1)} sec`;
     }
     else {
-        return `${(n / 60000).toFixed(1)} min`;
+        return `${(millis / 60000).toFixed(1)} min`;
     }
 }
 // ----------------------------------------------------------------------------

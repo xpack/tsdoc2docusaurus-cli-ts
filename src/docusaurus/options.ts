@@ -154,7 +154,6 @@ export async function parseOptions(argv: string[]): Promise<CliOptions> {
 
   const programOptions = program.opts()
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
   const id: string | undefined = programOptions.id as string | undefined
 
   let configurationOptions: CliConfigurationOptions | undefined = undefined
@@ -171,6 +170,7 @@ export async function parseOptions(argv: string[]): Promise<CliOptions> {
       pkgJson.config?.tsdoc2docusaurus ?? pkgJson.tsdoc2docusaurus
 
     configurationOptions = selectMultiConfiguration(multiConfigurations, id)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (err) {
     // try to get the configuration from doxygen2docusaurus.json.
     const userPackageJsonPath = path.resolve(
@@ -239,11 +239,10 @@ function selectMultiConfiguration(
 ): CliConfigurationOptions | undefined {
   let configurationOptions: CliConfigurationOptions | undefined = undefined
   if (id !== undefined) {
-    // eslint-disable-next-line @typescript-eslint/prefer-destructuring
-    configurationOptions =
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion
-      (multiConfigurations as Record<string, CliConfigurationOptions>)[id]
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    configurationOptions = (
+      multiConfigurations as Record<string, CliConfigurationOptions | undefined>
+    )[id]
+
     if (configurationOptions !== undefined) {
       configurationOptions.id = id
     }

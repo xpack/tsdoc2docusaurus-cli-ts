@@ -12,6 +12,7 @@
 // ----------------------------------------------------------------------------
 
 // TODO: define the data model.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DataModel = any
 
 // ----------------------------------------------------------------------------
