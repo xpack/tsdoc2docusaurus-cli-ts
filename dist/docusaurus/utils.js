@@ -21,4 +21,23 @@ export function formatDuration(millis) {
     }
 }
 // ----------------------------------------------------------------------------
+export function pluralise(name) {
+    const plurals = {
+        Class: 'Classes',
+        Interface: 'Interfaces',
+        Function: 'Functions',
+        Variable: 'Variables',
+        'Type alias': 'Type aliases',
+        Namespace: 'Namespaces',
+        Enum: 'Enums',
+        Method: 'Methods',
+        Property: 'Properties',
+    };
+    if (Object.prototype.hasOwnProperty.call(plurals, name)) {
+        return plurals[name];
+    }
+    console.warn(`No plural for ${name}, using default.`);
+    return name + 's?';
+}
+// ----------------------------------------------------------------------------
 //# sourceMappingURL=utils.js.map

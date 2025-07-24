@@ -16,11 +16,10 @@ import * as path from 'node:path'
 // import * as util from 'node:util'
 
 import { formatDuration } from '../docusaurus/utils.js'
-import type { DataModel } from '../tsdoc/types.js'
 import { type CliOptions, parseOptions } from '../docusaurus/options.js'
 import { parseDataModel } from '../tsdoc/parser.js'
-import { prepareViewModel } from '../docusaurus/view-model/prepare.js'
-import { generateMdFiles, generateSidebar } from '../docusaurus/generate.js'
+import { Workspace } from '../docusaurus/workspace.js'
+import { DocusaurusGenerator } from '../docusaurus/view-model/generator.js'
 
 // ----------------------------------------------------------------------------
 
@@ -49,17 +48,14 @@ export async function main(argv: string[]): Promise<number> {
   console.log()
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const dataModel: DataModel = await parseDataModel(options)
+  const dataModel = await parseDataModel(options)
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const viewModel = prepareViewModel({ dataModel, options })
+  const workspace = new Workspace({ dataModel, options })
 
-  exitCode = await generateSidebar({ viewModel, options })
-  if (exitCode !== 0) {
-    return exitCode
-  }
+  const generator = new DocusaurusGenerator(workspace)
 
-  exitCode = await generateMdFiles({ viewModel, options })
+  exitCode = await generator.run()
 
   const durationString = formatDuration(Date.now() - startTime)
 
