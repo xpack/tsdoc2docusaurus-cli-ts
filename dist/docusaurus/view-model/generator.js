@@ -22,12 +22,12 @@ export class DocusaurusGenerator {
     }
     async run() {
         console.log();
-        let exitCode = 0;
         await this.prepareOutputFolder();
         await this.generateMdFiles();
         const sidebarCategory = this.generateSidebarCategory();
-        exitCode = await this.writeSidebarFile(sidebarCategory);
-        return exitCode;
+        await this.writeSidebarFile(sidebarCategory);
+        await this.copyCssFile();
+        return 0;
     }
     // https://nodejs.org/en/learn/manipulating-files/working-with-folders-in-nodejs
     async prepareOutputFolder() {
@@ -295,21 +295,16 @@ export class DocusaurusGenerator {
         // console.log(util.inspect(sidebar, { compact: false, depth: 999 }));
         // Write the sidebar to file.
         const sidebarFilePath = this.workspace.options.sidebarCategoryFilePath;
-        try {
-            console.log(`Writing sidebar file ${sidebarFilePath}`);
-            const sidebarJson = JSON.stringify(sidebarCategory, null, 2);
-            await fs.writeFile(sidebarFilePath, sidebarJson);
-        }
-        catch (err) {
-            if (err instanceof Error) {
-                console.error(`Could not write sidebar file ${sidebarFilePath}: ${err.message}`);
-            }
-            else {
-                console.error(`Could not write sidebar file ${sidebarFilePath}: Unknown error`);
-            }
-            return 1;
-        }
-        return 0;
+        console.log(`Writing sidebar file ${sidebarFilePath}`);
+        const sidebarJson = JSON.stringify(sidebarCategory, null, 2);
+        await fs.writeFile(sidebarFilePath, sidebarJson);
+    }
+    async copyCssFile() {
+        const fromFilePath = path.join(this.workspace.projectPath, 'template', 'css', 'custom.css');
+        const toFilePath = this.workspace.options.customCssFilePath;
+        await fs.mkdir(path.dirname(toFilePath), { recursive: true });
+        console.log('Copying css file', toFilePath);
+        await fs.copyFile(fromFilePath, toFilePath);
     }
 }
 // ----------------------------------------------------------------------------
