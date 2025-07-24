@@ -36,8 +36,7 @@
 
 // ----------------------------------------------------------------------------
 
-// import { main } from '../dist/cli/main.js'
-import { main } from '../dist/tsdoc2docusaurus.js'
+import { main } from '../dist/cli/main.js'
 
 // ----------------------------------------------------------------------------
 
