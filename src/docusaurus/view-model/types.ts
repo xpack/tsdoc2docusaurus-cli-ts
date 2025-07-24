@@ -27,6 +27,7 @@ export interface EntryPoint {
 
   // Map of array of compounds, by kind (Class, Interface, ...)
   compoundsMap: Map<string, Compound[]>
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any
 }

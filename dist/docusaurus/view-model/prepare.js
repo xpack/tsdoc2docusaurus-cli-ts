@@ -9,7 +9,6 @@
  * be obtained from https://opensource.org/licenses/MIT.
  */
 import { pluralise } from '../generate.js';
-// import util from 'node:util'
 // ----------------------------------------------------------------------------
 export function prepareViewModel({ dataModel, options, }) {
     const entryPointsSet = new Set();
@@ -34,14 +33,14 @@ export function prepareViewModel({ dataModel, options, }) {
         if (options.debug) {
             console.log(
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            entryPointDataModel.kind,
+            entryPointDataModel.kind, 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
             entryPointDataModel.canonicalReference);
         }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
         const entryPointKind = entryPointDataModel.kind;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const entryPointLabel =
+        const entryPointLabel = 
         // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         entryPointDataModel.canonicalReference.replace(/[!]$/, '');
         const entryPointId = entryPointLabel.replace(/^.*\//, '').toLowerCase();
@@ -73,9 +72,9 @@ export function prepareViewModel({ dataModel, options, }) {
             if (options.debug) {
                 console.log(
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                compoundDataModel.kind,
+                compoundDataModel.kind, 
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                compoundDataModel.name,
+                compoundDataModel.name, 
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 compoundDataModel.canonicalReference);
             }
@@ -128,11 +127,11 @@ export function prepareViewModel({ dataModel, options, }) {
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                 for (const memberDataModel of compoundDataModel.members) {
                     if (options.debug) {
-                        console.log('  ',
+                        console.log('  ', 
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                        memberDataModel.kind,
+                        memberDataModel.kind, 
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                        memberDataModel.name,
+                        memberDataModel.name, 
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                         memberDataModel.canonicalReference);
                     }
@@ -151,7 +150,7 @@ export function prepareViewModel({ dataModel, options, }) {
                     }
                     else {
                         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-                        if (memberDataModel.name === undefined) {
+                        if (memberDataModel.name !== undefined) {
                             continue;
                         }
                         originalMemberId = memberLabel

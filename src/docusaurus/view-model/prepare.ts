@@ -11,6 +11,8 @@
 
 // ----------------------------------------------------------------------------
 
+// import util from 'node:util'
+
 import type { DataModel } from '../../tsdoc/types.js'
 import type {
   ViewModel,
@@ -21,7 +23,6 @@ import type {
 } from './types.js'
 import { pluralise } from '../generate.js'
 import type { CliOptions } from '../options.js'
-// import util from 'node:util'
 
 // ----------------------------------------------------------------------------
 
