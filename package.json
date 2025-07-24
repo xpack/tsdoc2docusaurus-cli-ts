@@ -13,7 +13,7 @@
     "compile-watch": "tsc --build --verbose --watch src",
     "compile": "tsc --build --verbose src",
     "prettier": "prettier src --write",
-    "fix": "eslint --fix",
+    "fix": "eslint --fix src",
     "dev-cycle": "npm run fix && npm run compile && npm run test",
     "npm-install": "npm install",
     "npm-link-helpers": "npm link @xpack/npm-packages-helper @xpack/docusaurus-template-liquid",
@@ -25,7 +25,7 @@
     "npm-version-minor": "npm version minor",
     "postversion": "git push origin --all && git push origin --tags",
     "git-log": "git log --pretty='%cd * %h %s' --date=short",
-    "lint": "eslint",
+    "lint": "eslint src",
     "prepare": "npm run prettier && npm run lint && npm run compile",
     "pretest-coverage": "npm run lint",
     "pretest-no-coverage": "npm run lint",
@@ -54,20 +54,20 @@
     "url": "https://github.com/xpack/tsdoc2docusaurus-ts/issues"
   },
   "homepage": "https://xpack.github.io/tsdoc2docusaurus-ts/",
-  "dependencies": {
-  },
   "devDependencies": {
+    "@eslint/js": "^9.31.0",
     "@tsconfig/node20": "^20.1.6",
     "@types/node": "^24.0.14",
     "@types/tap": "^15.0.12",
     "del-cli": "^6.0.0",
     "eslint": "^9.31.0",
-    "eslint-config-love": "^121.0.0",
+    "eslint-config-prettier": "^10.1.8",
     "json": "^11.0.0",
     "liquidjs": "^10.19.1",
     "prettier": "3.6.2",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.38.0"
   },
   "tap": {
     "files": [
