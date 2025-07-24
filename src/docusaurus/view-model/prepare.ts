@@ -219,7 +219,7 @@ export function prepareViewModel({
             originalMemberId = '_constructor_'
           } else {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-            if (memberDataModel.name !== undefined) {
+            if (memberDataModel.name === undefined) {
               continue
             }
 
