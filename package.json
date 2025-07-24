@@ -54,6 +54,7 @@
     "url": "https://github.com/xpack/tsdoc2docusaurus-ts/issues"
   },
   "homepage": "https://xpack.github.io/tsdoc2docusaurus-ts/",
+  "dependencies": {},
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@tsconfig/node20": "^20.1.6",
@@ -68,30 +69,6 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.38.0"
-  },
-  "tap": {
-    "files": [
-      "tests/tap/*.ts"
-    ],
-    "reporter": "base"
-  },
-  "eslintConfig": {
-    "rules": {
-      "max-len": [
-        "error",
-        80,
-        {
-          "ignoreUrls": true
-        }
-      ]
-    }
-  },
-  "ts-standard": {
-    "ignore": [
-      "/website/",
-      "**/*.d.ts",
-      "**/*.js"
-    ]
   },
   "prettier": {
     "printWidth": 80,
