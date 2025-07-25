@@ -20,10 +20,9 @@ import { DataModel } from './types.js'
 
 export async function parseDataModel(
   options: CliOptions
-  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-): Promise<DataModel | null> {
+): Promise<DataModel | undefined> {
   // Parse the API JSON file
-  let dataModel: DataModel = null
+  let dataModel: DataModel | undefined = undefined
   try {
     console.log(`Reading ${options.apiJsonInputFilePath}...`)
     const jsonContent = await fs.readFile(options.apiJsonInputFilePath, 'utf8')
@@ -41,7 +40,7 @@ export async function parseDataModel(
           'Unknown error'
       )
     }
-    return null
+    return undefined
   }
 
   return dataModel

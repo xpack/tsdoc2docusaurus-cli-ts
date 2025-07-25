@@ -47,16 +47,12 @@ export async function main(argv: string[]): Promise<number> {
 
   console.log()
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const dataModel = await parseDataModel(options)
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const workspace = new Workspace({ dataModel, options })
-
-  const generator = new DocusaurusGenerator(workspace)
-
-  exitCode = await generator.run()
-
+  if (dataModel !== undefined) {
+    const workspace = new Workspace({ dataModel, options })
+    const generator = new DocusaurusGenerator(workspace)
+    exitCode = await generator.run()
+  }
   const durationString = formatDuration(Date.now() - startTime)
 
   if (exitCode === 0) {

@@ -13,10 +13,10 @@
 
 import path from 'node:path'
 
-import { DataModel } from '../tsdoc/types.js'
 import { CliOptions } from './options.js'
 import { fileURLToPath } from 'node:url'
 import { ViewModel } from './view-model/view-model.js'
+import { DataModel } from '../tsdoc/types.js'
 
 // ----------------------------------------------------------------------------
 
@@ -65,7 +65,6 @@ export class Workspace {
     // console.log(__dirname, this.projectPath)
 
     this.options = options
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     this.dataModel = dataModel
 
     const docsFolderPath = this.options.docsFolderPath
@@ -95,7 +94,6 @@ export class Workspace {
     this.menuBaseUrl = `/${docsBaseUrl}/${apiBaseUrl}`
 
     this.viewModel = new ViewModel({
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       dataModel: this.dataModel,
       options: this.options,
     })

@@ -39,7 +39,6 @@ export class Workspace {
         this.projectPath = path.dirname(path.dirname(__dirname));
         // console.log(__dirname, this.projectPath)
         this.options = options;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         this.dataModel = dataModel;
         const docsFolderPath = this.options.docsFolderPath
             .replace(/^[/]/, '')
@@ -63,7 +62,6 @@ export class Workspace {
         this.slugBaseUrl = `/${apiBaseUrl}`;
         this.menuBaseUrl = `/${docsBaseUrl}/${apiBaseUrl}`;
         this.viewModel = new ViewModel({
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             dataModel: this.dataModel,
             options: this.options,
         });

@@ -11,8 +11,55 @@
 
 // ----------------------------------------------------------------------------
 
-// TODO: define the data model.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type DataModel = any
+export interface DataModel {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  metadata: any
+
+  kind: string // Package
+  canonicalReference: string // @scope/name!
+  name: string // @scope/name
+  preserveMemberOrder: boolean
+  members?: DataModelMember[]
+}
+
+export interface DataModelMember {
+  kind: string // EntryPoint, Class
+  canonicalReference: string
+  docComment: string
+  excerptTokens?: DataModelExcerpt[]
+  fileUrlPath?: string
+  releaseTag?: string // public
+  isAbstract?: boolean
+  name?: string // Possibly empty
+  preserveMemberOrder: boolean
+  isProtected?: boolean
+  isReadonly?: boolean
+  isOptional?: boolean
+  isStatic?: boolean
+  overloadIndex?: number
+  propertyTypeTokenRange?: DataModelTypeTokenRange
+  parameters?: DataModelParameter[]
+  members?: DataModelMember[]
+  extendsTokenRange?: DataModelTypeTokenRange
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  implementsTokenRanges: any[]
+}
+
+export interface DataModelExcerpt {
+  kind: string
+  text: string
+  canonicalReference?: string
+}
+
+export interface DataModelParameter {
+  parameterName: string
+  parameterTypeTokenRange: DataModelTypeTokenRange
+  isOptional: boolean
+}
+
+export interface DataModelTypeTokenRange {
+  startIndex: number
+  endIndex: number
+}
 
 // ----------------------------------------------------------------------------

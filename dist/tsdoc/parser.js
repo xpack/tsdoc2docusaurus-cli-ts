@@ -11,11 +11,9 @@
 // ----------------------------------------------------------------------------
 import fs from 'node:fs/promises';
 // ----------------------------------------------------------------------------
-export async function parseDataModel(options
-// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
-) {
+export async function parseDataModel(options) {
     // Parse the API JSON file
-    let dataModel = null;
+    let dataModel = undefined;
     try {
         console.log(`Reading ${options.apiJsonInputFilePath}...`);
         const jsonContent = await fs.readFile(options.apiJsonInputFilePath, 'utf8');
@@ -31,7 +29,7 @@ export async function parseDataModel(options
             console.warn(`Could not parse API JSON file ${options.apiJsonInputFilePath}: ` +
                 'Unknown error');
         }
-        return null;
+        return undefined;
     }
     return dataModel;
 }
