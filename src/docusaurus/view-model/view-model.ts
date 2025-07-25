@@ -36,6 +36,35 @@ export class ViewModel {
     dataModel: DataModel
     options: CliOptions
   }) {
+    // for (const apiPackage of dataModel.apiModel.packages) {
+    //   console.log(apiPackage.kind, apiPackage.displayName,
+    //     apiPackage.name, apiPackage.canonicalReference.toString())
+
+    //   for (const apiEntryPoint of apiPackage.entryPoints) {
+    //     console.log('  ', apiEntryPoint.kind, apiEntryPoint.displayName,
+    //       apiEntryPoint.name, apiEntryPoint.canonicalReference.toString())
+
+    //     for (const apiComponent of apiEntryPoint.members) {
+    //       console.log('    ', apiComponent.kind, apiComponent.displayName,
+    //         apiComponent.canonicalReference.toString())
+    //       // const x = apiComponent.canonicalReference
+
+    //       for (const apiMember of apiComponent.members) {
+    //         console.log('      ', apiMember.kind, apiMember.displayName,
+    //           apiMember.canonicalReference.toString())
+    //         // const y = apiMember.canonicalReference
+    //         // console.log(y.toString())
+    //       }
+    //     }
+    //   }
+    // }
+
+    // console.log('---')
+
+    // if (0 === 1) {
+    //   process.exit(0)
+    // }
+
     const entryPointsSet = new Set<EntryPoint>()
 
     // Key paths do not start with '/', permalinks are absolute
@@ -61,8 +90,8 @@ export class ViewModel {
 
     permalinksMapByPath.set(topIndex.inputFilePath, topIndex.permalink)
 
-    if (dataModel.members !== undefined) {
-      for (const entryPointDataModel of dataModel.members) {
+    if (dataModel.json?.members !== undefined) {
+      for (const entryPointDataModel of dataModel.json.members) {
         if (options.debug) {
           console.log(
             entryPointDataModel.kind,

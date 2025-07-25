@@ -14,7 +14,9 @@
 import fs from 'node:fs/promises'
 
 import { CliOptions } from '../docusaurus/options.js'
-import { DataModel } from './types.js'
+import { DataModel, DataModelJson } from './types.js'
+
+// import { ApiModel } from '@microsoft/api-extractor-model'
 
 // ----------------------------------------------------------------------------
 
@@ -22,12 +24,19 @@ export async function parseDataModel(
   options: CliOptions
 ): Promise<DataModel | undefined> {
   // Parse the API JSON file
-  let dataModel: DataModel | undefined = undefined
+
+  const apiJsonFilePath = options.apiJsonInputFilePath
+  console.log(`Reading ${apiJsonFilePath}...`)
+
+  // const apiModel: ApiModel = new ApiModel()
+  // apiModel.loadPackage(apiJsonFilePath)
+
+  // TODO: deprecate plain json after the transition to apiModel.
+  let json: DataModelJson | undefined = undefined
   try {
-    console.log(`Reading ${options.apiJsonInputFilePath}...`)
-    const jsonContent = await fs.readFile(options.apiJsonInputFilePath, 'utf8')
+    const jsonContent = await fs.readFile(apiJsonFilePath, 'utf8')
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    dataModel = JSON.parse(jsonContent)
+    json = JSON.parse(jsonContent)
   } catch (err) {
     if (err instanceof Error) {
       console.warn(
@@ -40,10 +49,12 @@ export async function parseDataModel(
           'Unknown error'
       )
     }
-    return undefined
   }
 
-  return dataModel
+  return {
+    // apiModel,
+    json,
+  }
 }
 
 // ----------------------------------------------------------------------------

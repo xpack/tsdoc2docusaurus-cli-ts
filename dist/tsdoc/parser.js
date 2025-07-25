@@ -10,15 +10,20 @@
  */
 // ----------------------------------------------------------------------------
 import fs from 'node:fs/promises';
+// import { ApiModel } from '@microsoft/api-extractor-model'
 // ----------------------------------------------------------------------------
 export async function parseDataModel(options) {
     // Parse the API JSON file
-    let dataModel = undefined;
+    const apiJsonFilePath = options.apiJsonInputFilePath;
+    console.log(`Reading ${apiJsonFilePath}...`);
+    // const apiModel: ApiModel = new ApiModel()
+    // apiModel.loadPackage(apiJsonFilePath)
+    // TODO: deprecate plain json after the transition to apiModel.
+    let json = undefined;
     try {
-        console.log(`Reading ${options.apiJsonInputFilePath}...`);
-        const jsonContent = await fs.readFile(options.apiJsonInputFilePath, 'utf8');
+        const jsonContent = await fs.readFile(apiJsonFilePath, 'utf8');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        dataModel = JSON.parse(jsonContent);
+        json = JSON.parse(jsonContent);
     }
     catch (err) {
         if (err instanceof Error) {
@@ -29,9 +34,11 @@ export async function parseDataModel(options) {
             console.warn(`Could not parse API JSON file ${options.apiJsonInputFilePath}: ` +
                 'Unknown error');
         }
-        return undefined;
     }
-    return dataModel;
+    return {
+        // apiModel,
+        json,
+    };
 }
 // ----------------------------------------------------------------------------
 //# sourceMappingURL=parser.js.map

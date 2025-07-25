@@ -9,9 +9,16 @@
  * be obtained from https://opensource.org/licenses/MIT.
  */
 
+// import { ApiModel } from "@microsoft/api-extractor-model"
+
 // ----------------------------------------------------------------------------
 
 export interface DataModel {
+  // apiModel: ApiModel
+  json?: DataModelJson
+}
+
+export interface DataModelJson {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: any
 
