@@ -15,16 +15,16 @@ import assert from 'node:assert'
 import path from 'node:path'
 import * as fs from 'node:fs/promises'
 
-import { Workspace } from '../workspace.js'
-import { FrontMatter } from './types.js'
-import { CliOptions } from '../options.js'
+import { Workspace } from './workspace.js'
+import { FrontMatter } from './view-model/types.js'
+import { CliOptions } from './options.js'
 import {
   NavbarItem,
   SidebarCategory,
   SidebarCategoryItem,
   SidebarDocItem,
-} from '../types.js'
-import { pluralise } from '../utils.js'
+} from './types.js'
+import { pluralise } from './utils.js'
 
 // ----------------------------------------------------------------------------
 

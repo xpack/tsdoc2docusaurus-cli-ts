@@ -16,7 +16,7 @@ import { formatDuration } from '../docusaurus/utils.js';
 import { parseOptions } from '../docusaurus/options.js';
 import { parseDataModel } from '../tsdoc/parser.js';
 import { Workspace } from '../docusaurus/workspace.js';
-import { DocusaurusGenerator } from '../docusaurus/view-model/generator.js';
+import { DocusaurusGenerator } from '../docusaurus/generator.js';
 // ----------------------------------------------------------------------------
 /**
  * Main entry point for the tsdoc2docusaurus CLI tool.

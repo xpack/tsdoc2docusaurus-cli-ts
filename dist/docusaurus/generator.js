@@ -12,7 +12,7 @@
 import assert from 'node:assert';
 import path from 'node:path';
 import * as fs from 'node:fs/promises';
-import { pluralise } from '../utils.js';
+import { pluralise } from './utils.js';
 // ----------------------------------------------------------------------------
 export class DocusaurusGenerator {
     workspace;

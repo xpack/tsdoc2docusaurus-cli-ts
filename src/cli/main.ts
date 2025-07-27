@@ -19,7 +19,7 @@ import { formatDuration } from '../docusaurus/utils.js'
 import { type CliOptions, parseOptions } from '../docusaurus/options.js'
 import { parseDataModel } from '../tsdoc/parser.js'
 import { Workspace } from '../docusaurus/workspace.js'
-import { DocusaurusGenerator } from '../docusaurus/view-model/generator.js'
+import { DocusaurusGenerator } from '../docusaurus/generator.js'
 
 // ----------------------------------------------------------------------------
 
