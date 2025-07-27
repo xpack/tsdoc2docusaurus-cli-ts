@@ -160,10 +160,7 @@ export class CliOptions {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const multiConfigurations: MultiConfigurations = JSON.parse(pkgJsonRaw)
 
-      configurationOptions = this.selectMultiConfiguration(
-        multiConfigurations,
-        this.id
-      )
+      configurationOptions = this.selectMultiConfiguration(multiConfigurations)
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (err) {
       /* Cannot read/parse JSON */
@@ -180,10 +177,8 @@ export class CliOptions {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const multiConfigurations: MultiConfigurations = JSON.parse(pkgJsonRaw)
 
-        configurationOptions = this.selectMultiConfiguration(
-          multiConfigurations,
-          this.id
-        )
+        configurationOptions =
+          this.selectMultiConfiguration(multiConfigurations)
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
         /* Cannot read/parse JSON */
@@ -207,10 +202,8 @@ export class CliOptions {
           pkgJson.config?.tsdoc2docusaurus ?? pkgJson.tsdoc2docusaurus
 
         if (multiConfigurations !== undefined) {
-          configurationOptions = this.selectMultiConfiguration(
-            multiConfigurations,
-            this.id
-          )
+          configurationOptions =
+            this.selectMultiConfiguration(multiConfigurations)
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (err) {
@@ -218,22 +211,23 @@ export class CliOptions {
       }
     }
 
-    // console.log(configurationOptions)
+    console.log(configurationOptions)
 
     if (configurationOptions !== undefined) {
       // Override only properties that exist in CliOptions
-      for (const key in configurationOptions) {
-        if (key in this) {
-          const value: unknown = configurationOptions[key]
-          if (value !== undefined) {
-            const thisProperty = (this as Record<string, unknown>)[key]
-            const thisType = typeof thisProperty
-            const valueType = typeof value
+      const thisProperties = Object.getOwnPropertyNames(this)
 
-            // Only override if types match
-            if (thisType === valueType) {
-              ;(this as Record<string, unknown>)[key] = value
-            }
+      for (const key of thisProperties) {
+        const value: unknown = configurationOptions[key]
+        // console.log(key, value)
+        if (value !== undefined) {
+          const thisProperty = (this as Record<string, unknown>)[key]
+          const thisType = typeof thisProperty
+          const valueType = typeof value
+
+          // Only override if types match
+          if (thisType === valueType) {
+            ;(this as Record<string, unknown>)[key] = value
           }
         }
       }
@@ -262,20 +256,19 @@ export class CliOptions {
   }
 
   selectMultiConfiguration(
-    multiConfigurations: CliConfigurationOptions | MultiConfigurations,
-    id: string | undefined
+    multiConfigurations: CliConfigurationOptions | MultiConfigurations
   ): CliConfigurationOptions | undefined {
     let configurationOptions: CliConfigurationOptions | undefined = undefined
-    if (id !== undefined) {
+    if (this.id !== 'default') {
       configurationOptions = (
         multiConfigurations as Record<
           string,
           CliConfigurationOptions | undefined
         >
-      )[id]
+      )[this.id]
 
       if (configurationOptions !== undefined) {
-        configurationOptions.id = id
+        configurationOptions.id = this.id
       }
     } else {
       configurationOptions = multiConfigurations as CliConfigurationOptions

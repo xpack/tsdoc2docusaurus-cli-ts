@@ -101,7 +101,7 @@ export class CliOptions {
             const pkgJsonRaw = await fs.readFile(userPackageJsonPath, 'utf8');
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const multiConfigurations = JSON.parse(pkgJsonRaw);
-            configurationOptions = this.selectMultiConfiguration(multiConfigurations, this.id);
+            configurationOptions = this.selectMultiConfiguration(multiConfigurations);
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         }
         catch (err) {
@@ -113,7 +113,8 @@ export class CliOptions {
                 const pkgJsonRaw = await fs.readFile(userPackageJsonPath, 'utf8');
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const multiConfigurations = JSON.parse(pkgJsonRaw);
-                configurationOptions = this.selectMultiConfiguration(multiConfigurations, this.id);
+                configurationOptions =
+                    this.selectMultiConfiguration(multiConfigurations);
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
             }
             catch (err) {
@@ -130,7 +131,8 @@ export class CliOptions {
                 const pkgJson = JSON.parse(pkgJsonRaw);
                 const multiConfigurations = pkgJson.config?.tsdoc2docusaurus ?? pkgJson.tsdoc2docusaurus;
                 if (multiConfigurations !== undefined) {
-                    configurationOptions = this.selectMultiConfiguration(multiConfigurations, this.id);
+                    configurationOptions =
+                        this.selectMultiConfiguration(multiConfigurations);
                 }
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
             }
@@ -138,21 +140,21 @@ export class CliOptions {
                 /* Cannot read/parse JSON */
             }
         }
-        // console.log(configurationOptions)
+        console.log(configurationOptions);
         if (configurationOptions !== undefined) {
             // Override only properties that exist in CliOptions
-            for (const key in configurationOptions) {
-                if (key in this) {
-                    const value = configurationOptions[key];
-                    if (value !== undefined) {
-                        const thisProperty = this[key];
-                        const thisType = typeof thisProperty;
-                        const valueType = typeof value;
-                        // Only override if types match
-                        if (thisType === valueType) {
-                            ;
-                            this[key] = value;
-                        }
+            const thisProperties = Object.getOwnPropertyNames(this);
+            for (const key of thisProperties) {
+                const value = configurationOptions[key];
+                // console.log(key, value)
+                if (value !== undefined) {
+                    const thisProperty = this[key];
+                    const thisType = typeof thisProperty;
+                    const valueType = typeof value;
+                    // Only override if types match
+                    if (thisType === valueType) {
+                        ;
+                        this[key] = value;
                     }
                 }
             }
@@ -168,12 +170,12 @@ export class CliOptions {
         // assert(this.apiBaseUrl.length > 0, 'apiBaseUrl is required')
         assert(this.sidebarCategoryFilePath.length > 0, 'sidebarCategoryFilePath is required');
     }
-    selectMultiConfiguration(multiConfigurations, id) {
+    selectMultiConfiguration(multiConfigurations) {
         let configurationOptions = undefined;
-        if (id !== undefined) {
-            configurationOptions = multiConfigurations[id];
+        if (this.id !== 'default') {
+            configurationOptions = multiConfigurations[this.id];
             if (configurationOptions !== undefined) {
-                configurationOptions.id = id;
+                configurationOptions.id = this.id;
             }
         }
         else {
