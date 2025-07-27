@@ -13,7 +13,7 @@
 
 export * from './cli/main.js'
 
-import { CliOptions } from './docusaurus/options.js'
+import { CliOptions } from './docusaurus/cli-options.js'
 import { ViewModel } from './docusaurus/view-model/view-model.js'
 import { DataModel } from './tsdoc/data-model.js'
 

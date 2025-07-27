@@ -17,7 +17,7 @@ import * as fs from 'node:fs/promises'
 
 import { Workspace } from './workspace.js'
 import { FrontMatter } from './view-model/types.js'
-import { CliOptions } from './options.js'
+import { CliOptions } from './cli-options.js'
 import {
   NavbarItem,
   SidebarCategory,

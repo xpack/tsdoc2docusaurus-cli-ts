@@ -14,7 +14,7 @@
 import fs from 'node:fs/promises'
 import path from 'node:path'
 
-import { CliOptions } from '../docusaurus/options.js'
+import { CliOptions } from '../docusaurus/cli-options.js'
 
 // ----------------------------------------------------------------------------
 

@@ -12,7 +12,7 @@
 // ----------------------------------------------------------------------------
 
 import { DataModel } from '../../index.js'
-import { CliOptions } from '../options.js'
+import { CliOptions } from '../cli-options.js'
 import { pluralise } from '../utils.js'
 import {
   Component,

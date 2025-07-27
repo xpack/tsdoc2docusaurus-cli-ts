@@ -13,7 +13,7 @@
 import * as path from 'node:path';
 // import * as util from 'node:util'
 import { formatDuration } from '../docusaurus/utils.js';
-import { parseOptions } from '../docusaurus/options.js';
+import { CliOptions } from '../docusaurus/cli-options.js';
 import { Workspace } from '../docusaurus/workspace.js';
 import { DocusaurusGenerator } from '../docusaurus/generator.js';
 import { DataModel } from '../tsdoc/data-model.js';
@@ -33,7 +33,8 @@ export async function main(argv) {
         commandLine += ` ${argv.slice(2).join(' ')}`;
     }
     console.log(`Running '${commandLine}'...`);
-    const options = await parseOptions(argv);
+    const options = new CliOptions(argv);
+    await options.parse();
     let exitCode = 0;
     console.log();
     const dataModel = new DataModel();
