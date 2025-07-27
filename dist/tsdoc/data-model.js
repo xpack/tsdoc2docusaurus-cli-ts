@@ -12,6 +12,9 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 // ----------------------------------------------------------------------------
+/**
+ * @public
+ */
 export class DataModel {
     jsons;
     constructor() {

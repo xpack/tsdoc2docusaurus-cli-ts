@@ -13,10 +13,27 @@
 
 export * from './cli/main.js'
 
-import { CliOptions } from './docusaurus/cli-options.js'
-import { ViewModel } from './docusaurus/view-model/view-model.js'
-import { DataModel } from './tsdoc/data-model.js'
-
-export { CliOptions, DataModel, ViewModel }
+// Export types and interfaces required by API Extractor
+export { ViewModel } from './docusaurus/view-model/view-model.js'
+export type {
+  CliOptions,
+  CliConfigurationOptions,
+  MultiConfigurations,
+} from './docusaurus/cli-options.js'
+export type {
+  EntryPoint,
+  EntryPointsSet,
+  Component,
+  Member,
+  TopIndex,
+} from './docusaurus/view-model/types.js'
+export type {
+  DataModel,
+  DataModelJson,
+  DataModelMember,
+  DataModelParameter,
+  DataModelTypeTokenRange,
+  DataModelExcerpt,
+} from './tsdoc/data-model.js'
 
 // ----------------------------------------------------------------------------

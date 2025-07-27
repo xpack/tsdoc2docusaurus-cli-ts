@@ -28,11 +28,17 @@ export interface Redirects {
 
 /**
  * Options, as written by the user in the configuration file.
+ *
+ * @public
  */
 export type CliConfigurationOptions = Record<string, string | boolean>
 
-// Combine single-configuration with multi-configurations.
-type MultiConfigurations = Record<string, CliConfigurationOptions>
+/**
+ * Combine single-configuration with multi-configurations.
+ *
+ * @public
+ */
+export type MultiConfigurations = Record<string, CliConfigurationOptions>
 
 // Prefer config.doxygen2docusaurus, but also accept doxygen2docusaurus.
 interface GenericPackageConfiguration {

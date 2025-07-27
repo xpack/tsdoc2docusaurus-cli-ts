@@ -24,6 +24,9 @@ import {
 
 // ----------------------------------------------------------------------------
 
+/**
+ * @public
+ */
 export class ViewModel {
   topIndex: TopIndex
   entryPointsSet: EntryPointsSet

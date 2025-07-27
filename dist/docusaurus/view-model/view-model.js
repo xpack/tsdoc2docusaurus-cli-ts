@@ -10,6 +10,9 @@
  */
 import { pluralise } from '../utils.js';
 // ----------------------------------------------------------------------------
+/**
+ * @public
+ */
 export class ViewModel {
     topIndex;
     entryPointsSet;

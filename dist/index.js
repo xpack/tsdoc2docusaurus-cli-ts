@@ -10,9 +10,7 @@
  */
 // ----------------------------------------------------------------------------
 export * from './cli/main.js';
-import { CliOptions } from './docusaurus/cli-options.js';
-import { ViewModel } from './docusaurus/view-model/view-model.js';
-import { DataModel } from './tsdoc/data-model.js';
-export { CliOptions, DataModel, ViewModel };
+// Export types and interfaces required by API Extractor
+export { ViewModel } from './docusaurus/view-model/view-model.js';
 // ----------------------------------------------------------------------------
 //# sourceMappingURL=index.js.map

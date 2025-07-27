@@ -11,6 +11,9 @@
 
 // ----------------------------------------------------------------------------
 
+/**
+ * @public
+ */
 export interface EntryPoint {
   kind: string
 
@@ -32,6 +35,9 @@ export interface EntryPoint {
   data: any
 }
 
+/**
+ * @public
+ */
 export interface Component {
   kind: string
 
@@ -53,6 +59,9 @@ export interface Component {
   data: any
 }
 
+/**
+ * @public
+ */
 export interface Member {
   kind: string
 
@@ -72,6 +81,9 @@ export interface Member {
   data: any
 }
 
+/**
+ * @public
+ */
 export interface TopIndex {
   kind: string
 
@@ -87,6 +99,9 @@ export interface TopIndex {
   outputFilePath: string
 }
 
+/**
+ * @public
+ */
 export type EntryPointsSet = Set<EntryPoint>
 
 export interface ViewModel {

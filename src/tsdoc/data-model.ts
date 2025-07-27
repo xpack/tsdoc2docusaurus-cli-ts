@@ -18,6 +18,9 @@ import { CliOptions } from '../docusaurus/cli-options.js'
 
 // ----------------------------------------------------------------------------
 
+/**
+ * @public
+ */
 export interface DataModelJson {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   metadata: any
@@ -29,6 +32,9 @@ export interface DataModelJson {
   members?: DataModelMember[]
 }
 
+/**
+ * @public
+ */
 export interface DataModelMember {
   kind: string // EntryPoint, Class
   canonicalReference: string
@@ -52,18 +58,27 @@ export interface DataModelMember {
   implementsTokenRanges: any[]
 }
 
+/**
+ * @public
+ */
 export interface DataModelExcerpt {
   kind: string
   text: string
   canonicalReference?: string
 }
 
+/**
+ * @public
+ */
 export interface DataModelParameter {
   parameterName: string
   parameterTypeTokenRange: DataModelTypeTokenRange
   isOptional: boolean
 }
 
+/**
+ * @public
+ */
 export interface DataModelTypeTokenRange {
   startIndex: number
   endIndex: number
@@ -71,6 +86,9 @@ export interface DataModelTypeTokenRange {
 
 // ----------------------------------------------------------------------------
 
+/**
+ * @public
+ */
 export class DataModel {
   jsons: DataModelJson[]
 
