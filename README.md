@@ -162,13 +162,13 @@ const sidebars: SidebarsConfig = {
 
 ## Top Menu
 
-The converter also generates a dropdown menu for integration into the top navigation bar.
+The converter also generates a dropdown menu entry for integration into the top navigation bar.
 
-To incorporate this into Docusaurus, edit your `docusaurus-config.ts` file and add the following import at the top:
+To incorporate this into Docusaurus, first edit your `docusaurus-config.ts` file and add the following import at the top:
 
 ```ts
-import tsdocApiMenu from './docusaurus-config-menu-tsdoc2docusaurus.json'
+import tsdocApiMenu from './docusaurus-config-navbar-tsdoc.json'
 ```
 
-Add `tsdocApiMenu` to the `navbar.items` array, for example,
+Subsequently, add `tsdocApiMenu` to the `navbar.items` array, for example,
 between the **Documentation** and **Blog** dropdowns.
