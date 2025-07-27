@@ -42,22 +42,44 @@ export async function parseOptions(argv) {
     const id = programOptions.id;
     let configurationOptions = undefined;
     try {
-        // Try to get the configuration from package.json/config/doxygen2docusaurus.
-        const userPackageJsonPath = path.resolve(process.cwd(), 'package.json');
-        const pkgJsonRaw = await fs.readFile(userPackageJsonPath, 'utf8');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const pkgJson = JSON.parse(pkgJsonRaw);
-        const multiConfigurations = pkgJson.config?.tsdoc2docusaurus ?? pkgJson.tsdoc2docusaurus;
-        configurationOptions = selectMultiConfiguration(multiConfigurations, id);
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    }
-    catch (err) {
-        // try to get the configuration from doxygen2docusaurus.json.
-        const userPackageJsonPath = path.resolve(process.cwd(), 'tsdoc2docusaurus.json');
+        const userPackageJsonPath = path.resolve(process.cwd(), 'config', 'tsdoc2docusaurus.json');
         const pkgJsonRaw = await fs.readFile(userPackageJsonPath, 'utf8');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const multiConfigurations = JSON.parse(pkgJsonRaw);
         configurationOptions = selectMultiConfiguration(multiConfigurations, id);
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    }
+    catch (err) {
+        /* Cannot read/parse JSON */
+    }
+    if (configurationOptions === undefined) {
+        try {
+            const userPackageJsonPath = path.resolve(process.cwd(), 'tsdoc2docusaurus.json');
+            const pkgJsonRaw = await fs.readFile(userPackageJsonPath, 'utf8');
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const multiConfigurations = JSON.parse(pkgJsonRaw);
+            configurationOptions = selectMultiConfiguration(multiConfigurations, id);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        }
+        catch (err) {
+            /* Cannot read/parse JSON */
+        }
+    }
+    if (configurationOptions === undefined) {
+        try {
+            // Try to get the configuration from
+            // package.json/[config/]doxygen2docusaurus.
+            const userPackageJsonPath = path.resolve(process.cwd(), 'package.json');
+            const pkgJsonRaw = await fs.readFile(userPackageJsonPath, 'utf8');
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const pkgJson = JSON.parse(pkgJsonRaw);
+            const multiConfigurations = pkgJson.config?.tsdoc2docusaurus ?? pkgJson.tsdoc2docusaurus;
+            configurationOptions = selectMultiConfiguration(multiConfigurations, id);
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        }
+        catch (err) {
+            /* Cannot read/parse JSON */
+        }
     }
     // console.log(configurationOptions)
     let options = defaultOptions;

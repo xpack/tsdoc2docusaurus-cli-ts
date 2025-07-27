@@ -67,30 +67,31 @@ Alternatively, during development:
 
 ## Converter Configuration
 
-By default, the converter attempts to retrieve its configuration from the `package.json` file in the current directory:
+By default, the converter attempts to retrieve its configuration from the
+following places:
+
+- the `config/tsdoc2docusaurus.json` file
+- the `tsdoc2docusaurus.json` file
+- the `config.tsdoc2docusaurus` object in `package.json`
+- the `tsdoc2docusaurus` object in `package.json`
+
+For example:
 
 ```json
 {
-  ...
-  "config": {
-    "tsdoc2docusaurus": {
-      "apiJsonInputFolderPath": "../api-extractor",
-      "apiMarkdownInputFolderPath": "../api-extractor/markdown",
-      "baseUrl": "/my-project-ts/",
-      "verbose": true,
-      "debug": false
-    }
-  }
+  "apiJsonInputFolderPath": "../api-extractor",
+  "apiMarkdownInputFolderPath": "../api-extractor/markdown",
+  "baseUrl": "/my-project-ts/",
+  "verbose": true,
+  "debug": false
 }
 ```
-
-(the `config` intermediate level is optional)
 
 If your `api-extractor` files are located elsewhere, update the `apiJsonInputFolderPath` and `apiMarkdownInputFolderPath` properties accordingly.
 
 The converter will process all `.api.json` files available within the input folder.
 
-To simplify running the conversion, add an npm script to your `website/package.json`:
+To simplify running the conversion, add a npm script to your `website/package.json`:
 
 ```json
   "scripts": {
@@ -105,7 +106,7 @@ To simplify running the conversion, add an npm script to your `website/package.j
 To execute the conversion, use:
 
 ```sh
-npm run convert-docs
+npm run convert-tsdoc
 ```
 
 ## Common Markdown
