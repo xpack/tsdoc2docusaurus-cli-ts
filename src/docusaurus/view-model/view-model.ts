@@ -15,7 +15,7 @@ import { DataModel } from '../../tsdoc/types.js'
 import { CliOptions } from '../options.js'
 import { pluralise } from '../utils.js'
 import {
-  Compound,
+  Component,
   EntryPoint,
   EntryPointsSet,
   Member,
@@ -131,57 +131,57 @@ export class ViewModel {
 
           outputFilePath,
 
-          // Map of array of compounds, by kind (Class, Interface, ...)
-          compoundsMap: new Map(),
+          // Map of array of components, by kind (Class, Interface, ...)
+          componentsMap: new Map(),
 
           data: entryPointDataModel,
         }
         entryPointsSet.add(entryPoint)
 
         if (entryPointDataModel.members !== undefined) {
-          for (const compoundDataModel of entryPointDataModel.members) {
+          for (const componentDataModel of entryPointDataModel.members) {
             if (options.debug) {
               console.log(
-                compoundDataModel.kind,
-                compoundDataModel.name,
-                compoundDataModel.canonicalReference
+                componentDataModel.kind,
+                componentDataModel.name,
+                componentDataModel.canonicalReference
               )
             }
 
-            const compoundKind: string = compoundDataModel.kind
-            const compoundLabel: string = compoundDataModel.name ?? '???'
-            const compoundId: string = (
-              compoundDataModel.name ?? '???'
+            const componentKind: string = componentDataModel.kind
+            const componentLabel: string = componentDataModel.name ?? '???'
+            const componentId: string = (
+              componentDataModel.name ?? '???'
             ).toLowerCase()
-            const compoundCategoryId = pluralise(compoundKind).toLowerCase()
+            const componentCategoryId = pluralise(componentKind).toLowerCase()
 
-            const inputFilePath = `${entryPointId}.${compoundId}.md`
+            const inputFilePath = `${entryPointId}.${componentId}.md`
             const permalink =
               `${outputBaseUrl}/${entryPointId}/` +
-              `${compoundCategoryId}/${compoundId}`
+              `${componentCategoryId}/${componentId}`
             permalinksMapByPath.set(inputFilePath, permalink)
 
             // eslint-disable-next-line max-len
-            const frontMatterSlug = `/${options.apiBaseUrl}/${entryPointId}/${compoundCategoryId}/${compoundId}`
+            const frontMatterSlug = `/${options.apiBaseUrl}/${entryPointId}/${componentCategoryId}/${componentId}`
 
-            let compoundTitle: string = compoundDataModel.name ?? '???'
-            if (compoundKind === 'Function') {
-              compoundTitle += '()'
+            let componentTitle: string = componentDataModel.name ?? '???'
+            if (componentKind === 'Function') {
+              componentTitle += '()'
             }
 
             const frontMatterTitle =
-              compoundTitle + ' ' + compoundKind.toLowerCase()
+              componentTitle + ' ' + componentKind.toLowerCase()
 
-            const sidebarLabel = compoundTitle
+            const sidebarLabel = componentTitle
             const sidebarId =
               `${options.apiFolderPath}/${entryPointId}/` +
-              `${compoundCategoryId}/${compoundId}`
+              `${componentCategoryId}/${componentId}`
 
             // eslint-disable-next-line max-len
-            const outputFilePath = `${entryPointId}/${compoundCategoryId}/${compoundId}.md`
+            const outputFilePath = `${entryPointId}/${componentCategoryId}/${componentId}.md`
 
-            const compound: Compound = {
-              kind: compoundKind,
+            const component: Component = {
+              kind: componentKind,
 
               inputFilePath,
               permalink,
@@ -197,20 +197,20 @@ export class ViewModel {
               // Map of array of members, by kind (Constructor, Property, ...)
               membersMap: new Map(),
 
-              data: compoundDataModel,
+              data: componentDataModel,
             }
 
-            let compoundsArray = entryPoint.compoundsMap.get(
-              compoundDataModel.kind
+            let componentsArray = entryPoint.componentsMap.get(
+              componentDataModel.kind
             )
-            if (compoundsArray === undefined) {
-              compoundsArray = []
-              entryPoint.compoundsMap.set(compound.kind, compoundsArray)
+            if (componentsArray === undefined) {
+              componentsArray = []
+              entryPoint.componentsMap.set(component.kind, componentsArray)
             }
-            compoundsArray.push(compound)
+            componentsArray.push(component)
 
-            if (compoundDataModel.members !== undefined) {
-              for (const memberDataModel of compoundDataModel.members) {
+            if (componentDataModel.members !== undefined) {
+              for (const memberDataModel of componentDataModel.members) {
                 if (options.debug) {
                   console.log(
                     '  ',
@@ -247,10 +247,10 @@ export class ViewModel {
                 }
 
                 // eslint-disable-next-line max-len
-                const inputFilePath = `${entryPointId}.${compoundId}.${originalMemberId}.md`
+                const inputFilePath = `${entryPointId}.${componentId}.${originalMemberId}.md`
                 const permalink =
                   `${outputBaseUrl}/${entryPointId}/` +
-                  `${compoundCategoryId}/${compoundId}/${memberId}`
+                  `${componentCategoryId}/${componentId}/${memberId}`
                 if (memberKind !== 'CallSignature') {
                   // if(originalMemberId === undefined) {
                   //   console.log(memberDataModel)
@@ -260,7 +260,7 @@ export class ViewModel {
 
                 const frontMatterSlug =
                   `/${options.apiBaseUrl}/${entryPointId}/` +
-                  `${compoundCategoryId}/${compoundId}/${memberId}`
+                  `${componentCategoryId}/${componentId}/${memberId}`
 
                 if (memberKind === 'Method') {
                   memberTitle += '()'
@@ -281,17 +281,17 @@ export class ViewModel {
 
                 const frontMatterTitle =
                   memberKind !== 'Constructor'
-                    ? `${compoundLabel}.${memberTitle} ` +
+                    ? `${componentLabel}.${memberTitle} ` +
                       titleKind.toLowerCase()
-                    : `${compoundLabel}.${memberTitle}`
+                    : `${componentLabel}.${memberTitle}`
 
                 const sidebarLabel = memberTitle
                 const sidebarId =
                   `${options.apiFolderPath}/${entryPointId}/` +
-                  `${compoundCategoryId}/${compoundId}/${escapedMemberId}`
+                  `${componentCategoryId}/${componentId}/${escapedMemberId}`
 
                 const outputFilePath =
-                  `${entryPointId}/${compoundCategoryId}/${compoundId}/` +
+                  `${entryPointId}/${componentCategoryId}/${componentId}/` +
                   `${escapedMemberId}.md`
 
                 const member: Member = {
@@ -315,10 +315,10 @@ export class ViewModel {
                 //   member.isHidden = true
                 // }
 
-                let membersArray = compound.membersMap.get(member.kind)
+                let membersArray = component.membersMap.get(member.kind)
                 if (membersArray === undefined) {
                   membersArray = []
-                  compound.membersMap.set(member.kind, membersArray)
+                  component.membersMap.set(member.kind, membersArray)
                 }
 
                 membersArray.push(member)

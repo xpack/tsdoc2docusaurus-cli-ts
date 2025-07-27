@@ -25,14 +25,14 @@ export interface EntryPoint {
 
   outputFilePath: string
 
-  // Map of array of compounds, by kind (Class, Interface, ...)
-  compoundsMap: Map<string, Compound[]>
+  // Map of array of components, by kind (Class, Interface, ...)
+  componentsMap: Map<string, Component[]>
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any
 }
 
-export interface Compound {
+export interface Component {
   kind: string
 
   inputFilePath: string

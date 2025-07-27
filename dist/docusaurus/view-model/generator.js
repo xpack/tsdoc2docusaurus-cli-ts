@@ -167,7 +167,7 @@ export class DocusaurusGenerator {
             });
             // ----------------------------------------------------------------------
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            for (const [compoundKind, compoundsArray] of entryPoint.compoundsMap) {
+            for (const [compoundKind, compoundsArray] of entryPoint.componentsMap) {
                 // console.log(`  ${compoundCategoryLabel}`)
                 for (const compound of compoundsArray) {
                     // console.log(`    ${compound.label}`)
@@ -243,7 +243,7 @@ export class DocusaurusGenerator {
                 items: [],
             };
             sidebarTopCategory.items.push(entryPointCategory);
-            for (const [kind, compoundsArray] of entryPoint.compoundsMap) {
+            for (const [kind, compoundsArray] of entryPoint.componentsMap) {
                 const compoundCategoryLabel = pluralise(kind);
                 const kindCategory = {
                     type: 'category',

@@ -80,38 +80,38 @@ export class ViewModel {
                     sidebarLabel,
                     sidebarId,
                     outputFilePath,
-                    // Map of array of compounds, by kind (Class, Interface, ...)
-                    compoundsMap: new Map(),
+                    // Map of array of components, by kind (Class, Interface, ...)
+                    componentsMap: new Map(),
                     data: entryPointDataModel,
                 };
                 entryPointsSet.add(entryPoint);
                 if (entryPointDataModel.members !== undefined) {
-                    for (const compoundDataModel of entryPointDataModel.members) {
+                    for (const componentDataModel of entryPointDataModel.members) {
                         if (options.debug) {
-                            console.log(compoundDataModel.kind, compoundDataModel.name, compoundDataModel.canonicalReference);
+                            console.log(componentDataModel.kind, componentDataModel.name, componentDataModel.canonicalReference);
                         }
-                        const compoundKind = compoundDataModel.kind;
-                        const compoundLabel = compoundDataModel.name ?? '???';
-                        const compoundId = (compoundDataModel.name ?? '???').toLowerCase();
-                        const compoundCategoryId = pluralise(compoundKind).toLowerCase();
-                        const inputFilePath = `${entryPointId}.${compoundId}.md`;
+                        const componentKind = componentDataModel.kind;
+                        const componentLabel = componentDataModel.name ?? '???';
+                        const componentId = (componentDataModel.name ?? '???').toLowerCase();
+                        const componentCategoryId = pluralise(componentKind).toLowerCase();
+                        const inputFilePath = `${entryPointId}.${componentId}.md`;
                         const permalink = `${outputBaseUrl}/${entryPointId}/` +
-                            `${compoundCategoryId}/${compoundId}`;
+                            `${componentCategoryId}/${componentId}`;
                         permalinksMapByPath.set(inputFilePath, permalink);
                         // eslint-disable-next-line max-len
-                        const frontMatterSlug = `/${options.apiBaseUrl}/${entryPointId}/${compoundCategoryId}/${compoundId}`;
-                        let compoundTitle = compoundDataModel.name ?? '???';
-                        if (compoundKind === 'Function') {
-                            compoundTitle += '()';
+                        const frontMatterSlug = `/${options.apiBaseUrl}/${entryPointId}/${componentCategoryId}/${componentId}`;
+                        let componentTitle = componentDataModel.name ?? '???';
+                        if (componentKind === 'Function') {
+                            componentTitle += '()';
                         }
-                        const frontMatterTitle = compoundTitle + ' ' + compoundKind.toLowerCase();
-                        const sidebarLabel = compoundTitle;
+                        const frontMatterTitle = componentTitle + ' ' + componentKind.toLowerCase();
+                        const sidebarLabel = componentTitle;
                         const sidebarId = `${options.apiFolderPath}/${entryPointId}/` +
-                            `${compoundCategoryId}/${compoundId}`;
+                            `${componentCategoryId}/${componentId}`;
                         // eslint-disable-next-line max-len
-                        const outputFilePath = `${entryPointId}/${compoundCategoryId}/${compoundId}.md`;
-                        const compound = {
-                            kind: compoundKind,
+                        const outputFilePath = `${entryPointId}/${componentCategoryId}/${componentId}.md`;
+                        const component = {
+                            kind: componentKind,
                             inputFilePath,
                             permalink,
                             frontMatterSlug,
@@ -121,16 +121,16 @@ export class ViewModel {
                             outputFilePath,
                             // Map of array of members, by kind (Constructor, Property, ...)
                             membersMap: new Map(),
-                            data: compoundDataModel,
+                            data: componentDataModel,
                         };
-                        let compoundsArray = entryPoint.compoundsMap.get(compoundDataModel.kind);
-                        if (compoundsArray === undefined) {
-                            compoundsArray = [];
-                            entryPoint.compoundsMap.set(compound.kind, compoundsArray);
+                        let componentsArray = entryPoint.componentsMap.get(componentDataModel.kind);
+                        if (componentsArray === undefined) {
+                            componentsArray = [];
+                            entryPoint.componentsMap.set(component.kind, componentsArray);
                         }
-                        compoundsArray.push(compound);
-                        if (compoundDataModel.members !== undefined) {
-                            for (const memberDataModel of compoundDataModel.members) {
+                        componentsArray.push(component);
+                        if (componentDataModel.members !== undefined) {
+                            for (const memberDataModel of componentDataModel.members) {
                                 if (options.debug) {
                                     console.log('  ', memberDataModel.kind, memberDataModel.name, memberDataModel.canonicalReference);
                                 }
@@ -154,9 +154,9 @@ export class ViewModel {
                                     memberId = originalMemberId;
                                 }
                                 // eslint-disable-next-line max-len
-                                const inputFilePath = `${entryPointId}.${compoundId}.${originalMemberId}.md`;
+                                const inputFilePath = `${entryPointId}.${componentId}.${originalMemberId}.md`;
                                 const permalink = `${outputBaseUrl}/${entryPointId}/` +
-                                    `${compoundCategoryId}/${compoundId}/${memberId}`;
+                                    `${componentCategoryId}/${componentId}/${memberId}`;
                                 if (memberKind !== 'CallSignature') {
                                     // if(originalMemberId === undefined) {
                                     //   console.log(memberDataModel)
@@ -164,7 +164,7 @@ export class ViewModel {
                                     permalinksMapByPath.set(inputFilePath, permalink);
                                 }
                                 const frontMatterSlug = `/${options.apiBaseUrl}/${entryPointId}/` +
-                                    `${compoundCategoryId}/${compoundId}/${memberId}`;
+                                    `${componentCategoryId}/${componentId}/${memberId}`;
                                 if (memberKind === 'Method') {
                                     memberTitle += '()';
                                 }
@@ -180,13 +180,13 @@ export class ViewModel {
                                     escapedMemberId = `$${escapedMemberId}$`;
                                 }
                                 const frontMatterTitle = memberKind !== 'Constructor'
-                                    ? `${compoundLabel}.${memberTitle} ` +
+                                    ? `${componentLabel}.${memberTitle} ` +
                                         titleKind.toLowerCase()
-                                    : `${compoundLabel}.${memberTitle}`;
+                                    : `${componentLabel}.${memberTitle}`;
                                 const sidebarLabel = memberTitle;
                                 const sidebarId = `${options.apiFolderPath}/${entryPointId}/` +
-                                    `${compoundCategoryId}/${compoundId}/${escapedMemberId}`;
-                                const outputFilePath = `${entryPointId}/${compoundCategoryId}/${compoundId}/` +
+                                    `${componentCategoryId}/${componentId}/${escapedMemberId}`;
+                                const outputFilePath = `${entryPointId}/${componentCategoryId}/${componentId}/` +
                                     `${escapedMemberId}.md`;
                                 const member = {
                                     kind: memberKind,
@@ -202,10 +202,10 @@ export class ViewModel {
                                 // if (memberId === undefined) {
                                 //   member.isHidden = true
                                 // }
-                                let membersArray = compound.membersMap.get(member.kind);
+                                let membersArray = component.membersMap.get(member.kind);
                                 if (membersArray === undefined) {
                                     membersArray = [];
-                                    compound.membersMap.set(member.kind, membersArray);
+                                    component.membersMap.set(member.kind, membersArray);
                                 }
                                 membersArray.push(member);
                             }
