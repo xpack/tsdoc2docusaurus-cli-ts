@@ -40,7 +40,9 @@ export interface CliConfigurationOptions {
   apiBaseUrl?: string
   sidebarCategoryFilePath?: string
   sidebarCategoryLabel?: string
-  menuDropdownLabel?: string
+  navbarLabel?: string
+  navbarPosition?: 'left' | 'right'
+  navbarFilePath?: string
   customCssFilePath?: string
   verbose?: boolean
   debug?: boolean
@@ -95,8 +97,17 @@ export interface CliOptions {
   /** Short text to be displayed in the sidebar. */
   sidebarCategoryLabel: string
 
+  /**
+   * Relative to the current website folder, default
+   * `docusaurus-config-tsdoc-menu.json`.
+   */
+  navbarFilePath: string
+
   /** Short text to be displayed in the menu. */
-  menuDropdownLabel: string
+  navbarLabel: string
+
+  /** Where the menu is to be displayed, left or right. */
+  navbarPosition: 'left' | 'right'
 
   /**
    * Relative to the current website folder, default
@@ -124,7 +135,9 @@ const defaultOptions: CliOptions = {
   apiBaseUrl: 'api',
   sidebarCategoryFilePath: 'sidebar-category-tsdoc.json',
   sidebarCategoryLabel: 'API Reference (TSDoc)',
-  menuDropdownLabel: 'Reference',
+  navbarFilePath: 'docusaurus-config-navbar-tsdoc.json',
+  navbarLabel: 'Reference',
+  navbarPosition: 'left',
   customCssFilePath: 'src/css/custom-tsdoc2docusaurus.css',
   verbose: false,
   debug: false,

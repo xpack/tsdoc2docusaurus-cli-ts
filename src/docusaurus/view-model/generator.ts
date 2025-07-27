@@ -19,6 +19,7 @@ import { Workspace } from '../workspace.js'
 import { FrontMatter } from './types.js'
 import { CliOptions } from '../options.js'
 import {
+  NavbarItem,
   SidebarCategory,
   SidebarCategoryItem,
   SidebarDocItem,
@@ -45,6 +46,9 @@ export class DocusaurusGenerator {
 
     const sidebarCategory = this.generateSidebarCategory()
     await this.writeSidebarFile(sidebarCategory)
+
+    const navbarItem = this.generateNavbarItem()
+    await this.writeMenuFile(navbarItem)
 
     await this.copyCssFile()
 
@@ -392,6 +396,18 @@ export class DocusaurusGenerator {
     return sidebarTopCategory
   }
 
+  generateNavbarItem(): NavbarItem {
+    const options = this.workspace.options
+
+    const navbarItem: NavbarItem = {
+      label: options.navbarLabel,
+      position: options.navbarPosition,
+      to: `/${options.docsBaseUrl}/${options.apiBaseUrl}`,
+    }
+
+    return navbarItem
+  }
+
   // --------------------------------------------------------------------------
 
   async writeSidebarFile(sidebarCategory: SidebarCategory): Promise<void> {
@@ -402,6 +418,17 @@ export class DocusaurusGenerator {
     console.log(`Writing sidebar file ${sidebarFilePath}`)
     const sidebarJson = JSON.stringify(sidebarCategory, null, 2)
     await fs.writeFile(sidebarFilePath, sidebarJson)
+  }
+
+  async writeMenuFile(navbarItem: NavbarItem): Promise<void> {
+    // console.log(util.inspect(navbarItem, { compact: false, depth: 999 }));
+    // Write the sidebar to file.
+
+    const navbarFilePath = this.workspace.options.navbarFilePath
+    console.log(`Writing navbar file ${navbarFilePath}`)
+
+    const navbarJson = JSON.stringify(navbarItem, null, 2)
+    await fs.writeFile(navbarFilePath, navbarJson)
   }
 
   async copyCssFile(): Promise<void> {
@@ -419,4 +446,5 @@ export class DocusaurusGenerator {
     await fs.copyFile(fromFilePath, toFilePath)
   }
 }
+
 // ----------------------------------------------------------------------------

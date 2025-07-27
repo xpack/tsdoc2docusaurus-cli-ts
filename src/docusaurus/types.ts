@@ -43,3 +43,15 @@ export interface SidebarCategoryItem {
 export type SidebarItem = SidebarDocItem | SidebarCategoryItem
 
 // ----------------------------------------------------------------------------
+
+// https://docusaurus.io/docs/api/themes/configuration#navbar-items
+
+export interface NavbarItem {
+  type?: string // 'dropdown'
+  label: string
+  to: string
+  position?: 'left' | 'right'
+  items?: NavbarItem[]
+}
+
+// ----------------------------------------------------------------------------
