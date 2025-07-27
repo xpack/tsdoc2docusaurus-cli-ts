@@ -12,11 +12,10 @@
 // ----------------------------------------------------------------------------
 
 import fs from 'node:fs/promises'
+import path from 'node:path'
 
 import { CliOptions } from '../docusaurus/options.js'
 import { DataModel, DataModelJson } from './types.js'
-
-// import { ApiModel } from '@microsoft/api-extractor-model'
 
 // ----------------------------------------------------------------------------
 
@@ -25,35 +24,37 @@ export async function parseDataModel(
 ): Promise<DataModel | undefined> {
   // Parse the API JSON file
 
-  const apiJsonFilePath = options.apiJsonInputFilePath
-  console.log(`Reading ${apiJsonFilePath}...`)
+  const jsons: DataModelJson[] = []
 
-  // const apiModel: ApiModel = new ApiModel()
-  // apiModel.loadPackage(apiJsonFilePath)
+  const afiFiles = await fs.readdir(options.apiJsonInputFolderPath)
+  for (const apiFile of afiFiles) {
+    if (apiFile.endsWith('.api.json')) {
+      console.log(apiFile)
 
-  // TODO: deprecate plain json after the transition to apiModel.
-  let json: DataModelJson | undefined = undefined
-  try {
-    const jsonContent = await fs.readFile(apiJsonFilePath, 'utf8')
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    json = JSON.parse(jsonContent)
-  } catch (err) {
-    if (err instanceof Error) {
-      console.warn(
-        `Could not parse API JSON file ${options.apiJsonInputFilePath}: ` +
-          err.message
-      )
-    } else {
-      console.warn(
-        `Could not parse API JSON file ${options.apiJsonInputFilePath}: ` +
-          'Unknown error'
-      )
+      const apiJsonFilePath = path.join(options.apiJsonInputFolderPath, apiFile)
+      console.log(`Reading ${apiJsonFilePath}...`)
+
+      try {
+        const jsonContent = await fs.readFile(apiJsonFilePath, 'utf8')
+
+        jsons.push(JSON.parse(jsonContent) as DataModelJson)
+      } catch (err) {
+        if (err instanceof Error) {
+          console.warn(
+            `Could not parse API JSON file ${apiJsonFilePath}: ` + err.message
+          )
+        } else {
+          console.warn(
+            `Could not parse API JSON file ${apiJsonFilePath}: ` +
+              'Unknown error'
+          )
+        }
+      }
     }
   }
 
   return {
-    // apiModel,
-    json,
+    jsons,
   }
 }
 

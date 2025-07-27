@@ -14,8 +14,7 @@
 // ----------------------------------------------------------------------------
 
 export interface DataModel {
-  // apiModel: ApiModel
-  json?: DataModelJson
+  jsons: DataModelJson[]
 }
 
 export interface DataModelJson {

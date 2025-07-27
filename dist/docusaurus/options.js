@@ -16,7 +16,7 @@ import * as util from 'node:util';
 // https://www.npmjs.com/package/commander
 import { Command } from 'commander';
 const defaultOptions = {
-    apiJsonInputFilePath: '../api-extractor/update-me.api.json',
+    apiJsonInputFolderPath: '../api-extractor',
     apiMarkdownInputFolderPath: '../api-extractor/markdown',
     docsFolderPath: 'docs',
     apiFolderPath: 'api',
@@ -69,7 +69,7 @@ export async function parseOptions(argv) {
         console.log();
         console.log('configuration:', util.inspect(options));
     }
-    assert(options.apiJsonInputFilePath.length > 0, 'doxygenXmlInputFolderPath is required');
+    assert(options.apiJsonInputFolderPath.length > 0, 'apiJsonInputFolderPath is required');
     assert(options.docsFolderPath.length > 0, 'docsFolderPath is required');
     assert(options.apiFolderPath.length > 0, 'apiFolderPath is required');
     assert(options.docsBaseUrl.length > 0, 'docsBaseUrl is required');

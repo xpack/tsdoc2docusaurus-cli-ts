@@ -31,7 +31,7 @@ export interface Redirects {
  * All are optional.
  */
 export interface CliConfigurationOptions {
-  apiJsonInputFilePath?: string
+  apiJsonInputFolderPath?: string
   apiMarkdownInputFolderPath?: string
   docsFolderPath?: string
   apiFolderPath?: string
@@ -57,13 +57,14 @@ export interface CliConfigurationOptions {
  */
 export interface CliOptions {
   /**
-   * Relative to the current website folder, like `doxygen/xml`, no initial/
-   * final slashes.
+   * Relative to the current website folder, like `../api-extractor`,
+   * no final slash.
    */
-  apiJsonInputFilePath: string
+  apiJsonInputFolderPath: string
 
   /**
-   * Relative to the current website folder, no initial/final slashes.
+   * Relative to the current website folder, like `../api-extractor/markdown`,
+   * no final slash.
    */
   apiMarkdownInputFolderPath: string
 
@@ -114,7 +115,7 @@ export interface CliOptions {
 }
 
 const defaultOptions: CliOptions = {
-  apiJsonInputFilePath: '../api-extractor/update-me.api.json',
+  apiJsonInputFolderPath: '../api-extractor',
   apiMarkdownInputFolderPath: '../api-extractor/markdown',
   docsFolderPath: 'docs',
   apiFolderPath: 'api',
@@ -201,8 +202,8 @@ export async function parseOptions(argv: string[]): Promise<CliOptions> {
   }
 
   assert(
-    options.apiJsonInputFilePath.length > 0,
-    'doxygenXmlInputFolderPath is required'
+    options.apiJsonInputFolderPath.length > 0,
+    'apiJsonInputFolderPath is required'
   )
 
   assert(options.docsFolderPath.length > 0, 'docsFolderPath is required')
