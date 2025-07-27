@@ -415,7 +415,7 @@ export class DocusaurusGenerator {
     // Write the sidebar to file.
 
     const sidebarFilePath = this.workspace.options.sidebarCategoryFilePath
-    console.log(`Writing sidebar file ${sidebarFilePath}`)
+    console.log(`Writing sidebar file ${sidebarFilePath}...`)
     const sidebarJson = JSON.stringify(sidebarCategory, null, 2)
     await fs.writeFile(sidebarFilePath, sidebarJson)
   }
@@ -425,7 +425,7 @@ export class DocusaurusGenerator {
     // Write the sidebar to file.
 
     const navbarFilePath = this.workspace.options.navbarFilePath
-    console.log(`Writing navbar file ${navbarFilePath}`)
+    console.log(`Writing navbar file ${navbarFilePath}...`)
 
     const navbarJson = JSON.stringify(navbarItem, null, 2)
     await fs.writeFile(navbarFilePath, navbarJson)
@@ -442,7 +442,7 @@ export class DocusaurusGenerator {
     const toFilePath = this.workspace.options.customCssFilePath
     await fs.mkdir(path.dirname(toFilePath), { recursive: true })
 
-    console.log('Copying css file', toFilePath)
+    console.log(`Copying css file ${toFilePath}...`)
     await fs.copyFile(fromFilePath, toFilePath)
   }
 }
