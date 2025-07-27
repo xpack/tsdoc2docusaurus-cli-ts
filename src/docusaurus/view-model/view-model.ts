@@ -11,7 +11,7 @@
 
 // ----------------------------------------------------------------------------
 
-import { DataModel } from '../../tsdoc/types.js'
+import { DataModel } from '../../index.js'
 import { CliOptions } from '../options.js'
 import { pluralise } from '../utils.js'
 import {

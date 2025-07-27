@@ -14,9 +14,9 @@ import * as path from 'node:path';
 // import * as util from 'node:util'
 import { formatDuration } from '../docusaurus/utils.js';
 import { parseOptions } from '../docusaurus/options.js';
-import { parseDataModel } from '../tsdoc/parser.js';
 import { Workspace } from '../docusaurus/workspace.js';
 import { DocusaurusGenerator } from '../docusaurus/generator.js';
+import { DataModel } from '../tsdoc/data-model.js';
 // ----------------------------------------------------------------------------
 /**
  * Main entry point for the tsdoc2docusaurus CLI tool.
@@ -36,12 +36,11 @@ export async function main(argv) {
     const options = await parseOptions(argv);
     let exitCode = 0;
     console.log();
-    const dataModel = await parseDataModel(options);
-    if (dataModel !== undefined) {
-        const workspace = new Workspace({ dataModel, options });
-        const generator = new DocusaurusGenerator(workspace);
-        exitCode = await generator.run();
-    }
+    const dataModel = new DataModel();
+    await dataModel.parse(options);
+    const workspace = new Workspace({ dataModel, options });
+    const generator = new DocusaurusGenerator(workspace);
+    exitCode = await generator.run();
     const durationString = formatDuration(Date.now() - startTime);
     if (exitCode === 0) {
         console.log();

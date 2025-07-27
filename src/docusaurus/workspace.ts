@@ -16,7 +16,7 @@ import path from 'node:path'
 import { CliOptions } from './options.js'
 import { fileURLToPath } from 'node:url'
 import { ViewModel } from './view-model/view-model.js'
-import { DataModel } from '../tsdoc/types.js'
+import { DataModel } from '../tsdoc/data-model.js'
 
 // ----------------------------------------------------------------------------
 

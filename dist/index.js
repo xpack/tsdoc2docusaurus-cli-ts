@@ -8,8 +8,10 @@
  * If a copy of the license was not distributed with this file, it can
  * be obtained from https://opensource.org/licenses/MIT.
  */
-export {};
-// import { ApiModel } from "@microsoft/api-extractor-model"
 // ----------------------------------------------------------------------------
+export * from './cli/main.js';
+import { ViewModel } from './docusaurus/view-model/view-model.js';
+import { DataModel } from './tsdoc/data-model.js';
+export { DataModel, ViewModel };
 // ----------------------------------------------------------------------------
-//# sourceMappingURL=types.js.map
+//# sourceMappingURL=index.js.map

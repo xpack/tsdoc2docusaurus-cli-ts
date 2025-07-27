@@ -17,9 +17,9 @@ import * as path from 'node:path'
 
 import { formatDuration } from '../docusaurus/utils.js'
 import { type CliOptions, parseOptions } from '../docusaurus/options.js'
-import { parseDataModel } from '../tsdoc/parser.js'
 import { Workspace } from '../docusaurus/workspace.js'
 import { DocusaurusGenerator } from '../docusaurus/generator.js'
+import { DataModel } from '../tsdoc/data-model.js'
 
 // ----------------------------------------------------------------------------
 
@@ -47,12 +47,14 @@ export async function main(argv: string[]): Promise<number> {
 
   console.log()
 
-  const dataModel = await parseDataModel(options)
-  if (dataModel !== undefined) {
-    const workspace = new Workspace({ dataModel, options })
-    const generator = new DocusaurusGenerator(workspace)
-    exitCode = await generator.run()
-  }
+  const dataModel = new DataModel()
+  await dataModel.parse(options)
+
+  const workspace = new Workspace({ dataModel, options })
+
+  const generator = new DocusaurusGenerator(workspace)
+  exitCode = await generator.run()
+
   const durationString = formatDuration(Date.now() - startTime)
 
   if (exitCode === 0) {
