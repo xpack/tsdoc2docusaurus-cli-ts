@@ -19,6 +19,7 @@ export interface SidebarCategory {
     type: 'doc'
     id: string
   }
+  className?: string
   collapsed: boolean
   items: SidebarItem[]
 }
@@ -26,6 +27,7 @@ export interface SidebarCategory {
 export interface SidebarDocItem {
   type: 'doc'
   label: string
+  className?: string
   id: string
 }
 
@@ -36,6 +38,7 @@ export interface SidebarCategoryItem {
     type: 'doc'
     id: string
   }
+  className?: string
   collapsed: boolean
   items: SidebarItem[]
 }

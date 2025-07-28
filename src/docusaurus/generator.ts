@@ -327,6 +327,7 @@ export class DocusaurusGenerator {
         type: 'doc',
         id: topIndex.sidebarId,
       },
+      className: 'tsdocEllipsis',
       collapsed: false,
       items: [],
     }
@@ -339,6 +340,7 @@ export class DocusaurusGenerator {
           type: 'doc',
           id: entryPoint.sidebarId,
         },
+        className: 'tsdocEllipsis',
         collapsed: false,
         items: [],
       }
@@ -349,6 +351,7 @@ export class DocusaurusGenerator {
         const kindCategory: SidebarCategoryItem = {
           type: 'category',
           label: compoundCategoryLabel,
+          className: 'tsdocEllipsis',
           collapsed: true,
           items: [],
         }
@@ -362,6 +365,7 @@ export class DocusaurusGenerator {
               type: 'doc',
               id: compound.sidebarId,
             },
+            className: 'tsdocEllipsis',
             collapsed: true,
             items: [],
           }
@@ -382,8 +386,9 @@ export class DocusaurusGenerator {
 
                 const memberDoc: SidebarDocItem = {
                   type: 'doc',
-                  id: member.sidebarId,
                   label: member.sidebarLabel,
+                  className: 'tsdocEllipsis',
+                  id: member.sidebarId,
                 }
                 compoundCategory.items.push(memberDoc)
               }
