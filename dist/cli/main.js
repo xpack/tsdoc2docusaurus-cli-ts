@@ -37,9 +37,9 @@ export async function main(argv) {
     await options.parse();
     let exitCode = 0;
     console.log();
-    const dataModel = new DataModel();
-    await dataModel.parse(options);
-    const workspace = new Workspace({ dataModel, options });
+    const dataModel = new DataModel(options);
+    await dataModel.parse();
+    const workspace = new Workspace(dataModel);
     const generator = new DocusaurusGenerator(workspace);
     exitCode = await generator.run();
     const durationString = formatDuration(Date.now() - startTime);

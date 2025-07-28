@@ -16,17 +16,19 @@ import path from 'node:path';
  * @public
  */
 export class DataModel {
+    options;
     jsons;
-    constructor() {
+    constructor(options) {
+        this.options = options;
         this.jsons = [];
     }
-    async parse(options) {
+    async parse() {
         // Parse the API JSON files
-        const afiFiles = await fs.readdir(options.apiJsonInputFolderPath);
+        const afiFiles = await fs.readdir(this.options.apiJsonInputFolderPath);
         for (const apiFile of afiFiles) {
             if (apiFile.endsWith('.api.json')) {
                 console.log(apiFile);
-                const apiJsonFilePath = path.join(options.apiJsonInputFolderPath, apiFile);
+                const apiJsonFilePath = path.join(this.options.apiJsonInputFolderPath, apiFile);
                 console.log(`Reading ${apiJsonFilePath}...`);
                 try {
                     const jsonContent = await fs.readFile(apiJsonFilePath, 'utf8');

@@ -16,9 +16,11 @@ import { pluralise } from './utils.js';
 // ----------------------------------------------------------------------------
 export class DocusaurusGenerator {
     workspace;
+    options;
     writtenFilesCount = 0;
     constructor(workspace) {
         this.workspace = workspace;
+        this.options = workspace.options;
     }
     async run() {
         console.log();
@@ -51,7 +53,7 @@ export class DocusaurusGenerator {
         const inputData = await fs.readFile(filePath, 'utf8');
         return inputData.split('\n').map((line) => line.trimEnd());
     }
-    async writeOutputFile({ filePath, frontMatter, lines, options, }) {
+    async writeOutputMdFile({ filePath, frontMatter, lines, }) {
         const header = [
             '---',
             // '',
@@ -69,7 +71,7 @@ export class DocusaurusGenerator {
         const footer = ['</div>'];
         const outputContent = header.concat(lines).concat(footer).join('\n');
         await fs.mkdir(path.dirname(filePath), { recursive: true });
-        if (options.verbose) {
+        if (this.options.verbose) {
             console.log(`Writing ${filePath}...`);
         }
         await fs.writeFile(filePath, outputContent, 'utf8');
@@ -145,11 +147,10 @@ export class DocusaurusGenerator {
                 slug: topIndex.frontMatterSlug,
                 title: topIndex.frontMatterTitle,
             };
-            await this.writeOutputFile({
+            await this.writeOutputMdFile({
                 filePath: `${outputFolderPath}/${topIndex.outputFilePath}`,
                 frontMatter,
                 lines: patchLinesLines,
-                options,
             });
         }
         // ------------------------------------------------------------------------
@@ -161,11 +162,10 @@ export class DocusaurusGenerator {
                 slug: entryPoint.frontMatterSlug,
                 title: entryPoint.frontMatterTitle,
             };
-            await this.writeOutputFile({
+            await this.writeOutputMdFile({
                 filePath: `${outputFolderPath}/${entryPoint.outputFilePath}`,
                 frontMatter,
                 lines: patchLinesLines,
-                options,
             });
             // ----------------------------------------------------------------------
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -180,11 +180,10 @@ export class DocusaurusGenerator {
                         title: compound.frontMatterTitle,
                     };
                     // TODO: Insert members into compound (future improvement).
-                    await this.writeOutputFile({
+                    await this.writeOutputMdFile({
                         filePath: `${outputFolderPath}/${compound.outputFilePath}`,
                         frontMatter,
                         lines: patchLinesLines,
-                        options,
                     });
                     // ------------------------------------------------------------------
                     if (compound.membersMap.size > 0) {
@@ -203,11 +202,10 @@ export class DocusaurusGenerator {
                                     slug: member.frontMatterSlug,
                                     title: member.frontMatterTitle,
                                 };
-                                await this.writeOutputFile({
+                                await this.writeOutputMdFile({
                                     filePath: `${outputFolderPath}/${member.outputFilePath}`,
                                     frontMatter,
                                     lines: patchLinesLines,
-                                    options,
                                 });
                             }
                         }
@@ -230,6 +228,7 @@ export class DocusaurusGenerator {
                 type: 'doc',
                 id: topIndex.sidebarId,
             },
+            className: 'tsdocEllipsis',
             collapsed: false,
             items: [],
         };
@@ -241,6 +240,7 @@ export class DocusaurusGenerator {
                     type: 'doc',
                     id: entryPoint.sidebarId,
                 },
+                className: 'tsdocEllipsis',
                 collapsed: false,
                 items: [],
             };
@@ -250,6 +250,7 @@ export class DocusaurusGenerator {
                 const kindCategory = {
                     type: 'category',
                     label: compoundCategoryLabel,
+                    className: 'tsdocEllipsis',
                     collapsed: true,
                     items: [],
                 };
@@ -262,6 +263,7 @@ export class DocusaurusGenerator {
                             type: 'doc',
                             id: compound.sidebarId,
                         },
+                        className: 'tsdocEllipsis',
                         collapsed: true,
                         items: [],
                     };
@@ -280,8 +282,9 @@ export class DocusaurusGenerator {
                                 // }
                                 const memberDoc = {
                                     type: 'doc',
-                                    id: member.sidebarId,
                                     label: member.sidebarLabel,
+                                    className: 'tsdocEllipsis',
+                                    id: member.sidebarId,
                                 };
                                 compoundCategory.items.push(memberDoc);
                             }

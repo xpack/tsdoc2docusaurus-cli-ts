@@ -14,29 +14,16 @@ import { pluralise } from '../utils.js';
  * @public
  */
 export class ViewModel {
+    options;
+    workspace;
     topIndex;
     entryPointsSet;
     permalinksMapByPath;
-    constructor({ dataModel, options, }) {
-        // for (const apiPackage of dataModel.apiModel.packages) {
-        //   console.log(apiPackage.kind, apiPackage.displayName,
-        //     apiPackage.name, apiPackage.canonicalReference.toString())
-        //   for (const apiEntryPoint of apiPackage.entryPoints) {
-        //     console.log('  ', apiEntryPoint.kind, apiEntryPoint.displayName,
-        //       apiEntryPoint.name, apiEntryPoint.canonicalReference.toString())
-        //     for (const apiComponent of apiEntryPoint.members) {
-        //       console.log('    ', apiComponent.kind, apiComponent.displayName,
-        //         apiComponent.canonicalReference.toString())
-        //       // const x = apiComponent.canonicalReference
-        //       for (const apiMember of apiComponent.members) {
-        //         console.log('      ', apiMember.kind, apiMember.displayName,
-        //           apiMember.canonicalReference.toString())
-        //         // const y = apiMember.canonicalReference
-        //         // console.log(y.toString())
-        //       }
-        //     }
-        //   }
-        // }
+    constructor(workspace) {
+        this.workspace = workspace;
+        this.options = workspace.options;
+        const options = workspace.options;
+        const dataModel = workspace.dataModel;
         // Key paths do not start with '/', permalinks are absolute
         // (start with baseUrl).
         const permalinksMapByPath = new Map();
