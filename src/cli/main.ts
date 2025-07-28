@@ -48,10 +48,10 @@ export async function main(argv: string[]): Promise<number> {
 
   console.log()
 
-  const dataModel = new DataModel()
-  await dataModel.parse(options)
+  const dataModel = new DataModel(options)
+  await dataModel.parse()
 
-  const workspace = new Workspace({ dataModel, options })
+  const workspace = new Workspace(dataModel)
 
   const generator = new DocusaurusGenerator(workspace)
   exitCode = await generator.run()

@@ -21,15 +21,15 @@ import { DataModel } from '../tsdoc/data-model.js'
 // ----------------------------------------------------------------------------
 
 export class Workspace {
-  // The tsdoc2docusaurus project path.
-  projectPath: string
+  // From the project docusaurus.config.ts or defaults.
+  options: CliOptions
 
   dataModel: DataModel
 
   viewModel: ViewModel
 
-  // From the project docusaurus.config.ts or defaults.
-  options: CliOptions
+  // The tsdoc2docusaurus project path.
+  projectPath: string
 
   // Like `/micro-os-plus/docs/api/`.
   absoluteBaseUrl: string
@@ -49,23 +49,16 @@ export class Workspace {
   // like `api/`.
   sidebarBaseId: string
 
-  constructor({
-    dataModel,
-    options,
-  }: {
-    dataModel: DataModel
-    options: CliOptions
-  }) {
-    // Like .../tsdoc2docusaurus/dist/src/docusaurus/generator
+  constructor(dataModel: DataModel) {
+    this.dataModel = dataModel
+    this.options = dataModel.options
 
+    // Like .../tsdoc2docusaurus/dist/src/docusaurus/generator
     const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
     // tsdoc2docusaurus
     this.projectPath = path.dirname(path.dirname(__dirname))
     // console.log(__dirname, this.projectPath)
-
-    this.options = options
-    this.dataModel = dataModel
 
     const docsFolderPath = this.options.docsFolderPath
       .replace(/^[/]/, '')
@@ -93,10 +86,7 @@ export class Workspace {
     this.slugBaseUrl = `/${apiBaseUrl}`
     this.menuBaseUrl = `/${docsBaseUrl}/${apiBaseUrl}`
 
-    this.viewModel = new ViewModel({
-      dataModel: this.dataModel,
-      options: this.options,
-    })
+    this.viewModel = new ViewModel(this)
   }
 }
 

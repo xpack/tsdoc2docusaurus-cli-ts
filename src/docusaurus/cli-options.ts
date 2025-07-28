@@ -34,13 +34,13 @@ export interface Redirects {
 export type CliConfigurationOptions = Record<string, string | boolean>
 
 /**
- * Combine single-configuration with multi-configurations.
+ * Options, when multi-configurations are used.
  *
  * @public
  */
 export type MultiConfigurations = Record<string, CliConfigurationOptions>
 
-// Prefer config.doxygen2docusaurus, but also accept doxygen2docusaurus.
+// Prefer config.tsdoc2docusaurus, but also accept tsdoc2docusaurus.
 interface GenericPackageConfiguration {
   config?: { tsdoc2docusaurus: CliConfigurationOptions }
   tsdoc2docusaurus?: CliConfigurationOptions

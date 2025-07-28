@@ -90,21 +90,25 @@ export interface DataModelTypeTokenRange {
  * @public
  */
 export class DataModel {
+  options: CliOptions
+
   jsons: DataModelJson[]
 
-  constructor() {
+  constructor(options: CliOptions) {
+    this.options = options
+
     this.jsons = []
   }
 
-  async parse(options: CliOptions): Promise<void> {
+  async parse(): Promise<void> {
     // Parse the API JSON files
-    const afiFiles = await fs.readdir(options.apiJsonInputFolderPath)
+    const afiFiles = await fs.readdir(this.options.apiJsonInputFolderPath)
     for (const apiFile of afiFiles) {
       if (apiFile.endsWith('.api.json')) {
         console.log(apiFile)
 
         const apiJsonFilePath = path.join(
-          options.apiJsonInputFolderPath,
+          this.options.apiJsonInputFolderPath,
           apiFile
         )
         console.log(`Reading ${apiJsonFilePath}...`)

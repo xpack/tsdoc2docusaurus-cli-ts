@@ -11,9 +11,9 @@
 
 // ----------------------------------------------------------------------------
 
-import { DataModel } from '../../index.js'
 import { CliOptions } from '../cli-options.js'
 import { pluralise } from '../utils.js'
+import { Workspace } from '../workspace.js'
 import {
   Component,
   EntryPoint,
@@ -28,39 +28,20 @@ import {
  * @public
  */
 export class ViewModel {
+  options: CliOptions
+
+  workspace: Workspace
+
   topIndex: TopIndex
   entryPointsSet: EntryPointsSet
   permalinksMapByPath: Map<string, string>
 
-  constructor({
-    dataModel,
-    options,
-  }: {
-    dataModel: DataModel
-    options: CliOptions
-  }) {
-    // for (const apiPackage of dataModel.apiModel.packages) {
-    //   console.log(apiPackage.kind, apiPackage.displayName,
-    //     apiPackage.name, apiPackage.canonicalReference.toString())
+  constructor(workspace: Workspace) {
+    this.workspace = workspace
+    this.options = workspace.options
 
-    //   for (const apiEntryPoint of apiPackage.entryPoints) {
-    //     console.log('  ', apiEntryPoint.kind, apiEntryPoint.displayName,
-    //       apiEntryPoint.name, apiEntryPoint.canonicalReference.toString())
-
-    //     for (const apiComponent of apiEntryPoint.members) {
-    //       console.log('    ', apiComponent.kind, apiComponent.displayName,
-    //         apiComponent.canonicalReference.toString())
-    //       // const x = apiComponent.canonicalReference
-
-    //       for (const apiMember of apiComponent.members) {
-    //         console.log('      ', apiMember.kind, apiMember.displayName,
-    //           apiMember.canonicalReference.toString())
-    //         // const y = apiMember.canonicalReference
-    //         // console.log(y.toString())
-    //       }
-    //     }
-    //   }
-    // }
+    const options = workspace.options
+    const dataModel = workspace.dataModel
 
     // Key paths do not start with '/', permalinks are absolute
     // (start with baseUrl).

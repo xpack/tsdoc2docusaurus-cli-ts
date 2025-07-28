@@ -31,10 +31,14 @@ import { pluralise } from './utils.js'
 export class DocusaurusGenerator {
   workspace: Workspace
 
+  options: CliOptions
+
   writtenFilesCount = 0
 
   constructor(workspace: Workspace) {
     this.workspace = workspace
+
+    this.options = workspace.options
   }
 
   async run(): Promise<number> {
@@ -76,16 +80,14 @@ export class DocusaurusGenerator {
     return inputData.split('\n').map((line) => line.trimEnd())
   }
 
-  async writeOutputFile({
+  async writeOutputMdFile({
     filePath,
     frontMatter,
     lines,
-    options,
   }: {
     filePath: string
     frontMatter: FrontMatter
     lines: string[]
-    options: CliOptions
   }): Promise<void> {
     const header = [
       '---',
@@ -107,7 +109,7 @@ export class DocusaurusGenerator {
     const outputContent = header.concat(lines).concat(footer).join('\n')
     await fs.mkdir(path.dirname(filePath), { recursive: true })
 
-    if (options.verbose) {
+    if (this.options.verbose) {
       console.log(`Writing ${filePath}...`)
     }
     await fs.writeFile(filePath, outputContent, 'utf8')
@@ -205,11 +207,10 @@ export class DocusaurusGenerator {
         title: topIndex.frontMatterTitle,
       }
 
-      await this.writeOutputFile({
+      await this.writeOutputMdFile({
         filePath: `${outputFolderPath}/${topIndex.outputFilePath}`,
         frontMatter,
         lines: patchLinesLines,
-        options,
       })
     }
 
@@ -231,11 +232,10 @@ export class DocusaurusGenerator {
         title: entryPoint.frontMatterTitle,
       }
 
-      await this.writeOutputFile({
+      await this.writeOutputMdFile({
         filePath: `${outputFolderPath}/${entryPoint.outputFilePath}`,
         frontMatter,
         lines: patchLinesLines,
-        options,
       })
 
       // ----------------------------------------------------------------------
@@ -260,11 +260,10 @@ export class DocusaurusGenerator {
           }
 
           // TODO: Insert members into compound (future improvement).
-          await this.writeOutputFile({
+          await this.writeOutputMdFile({
             filePath: `${outputFolderPath}/${compound.outputFilePath}`,
             frontMatter,
             lines: patchLinesLines,
-            options,
           })
 
           // ------------------------------------------------------------------
@@ -294,11 +293,10 @@ export class DocusaurusGenerator {
                   title: member.frontMatterTitle,
                 }
 
-                await this.writeOutputFile({
+                await this.writeOutputMdFile({
                   filePath: `${outputFolderPath}/${member.outputFilePath}`,
                   frontMatter,
                   lines: patchLinesLines,
-                  options,
                 })
               }
             }
