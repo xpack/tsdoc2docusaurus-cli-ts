@@ -9,7 +9,8 @@
     "tsdoc2docusaurus": "./bin/tsdoc2docusaurus.js"
   },
   "files": [
-    "dist/"
+    "dist/",
+    "template/"
   ],
   "scripts": {
     "generate-top-commons": "bash node_modules/@xpack/npm-packages-helper/maintenance-scripts/generate-top-commons.sh --xpack",
