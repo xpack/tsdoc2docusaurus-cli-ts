@@ -8,6 +8,9 @@
   "bin": {
     "tsdoc2docusaurus": "./bin/tsdoc2docusaurus.js"
   },
+  "files": [
+    "dist/"
+  ],
   "scripts": {
     "generate-top-commons": "bash node_modules/@xpack/npm-packages-helper/maintenance-scripts/generate-top-commons.sh --xpack",
     "prepare": "del-cli dist && npm run prettier && npm run lint && npm run compile",
