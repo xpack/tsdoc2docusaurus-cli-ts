@@ -82,7 +82,9 @@ export class ViewModel {
                             const componentKind = componentDataModel.kind;
                             const componentLabel = componentDataModel.name ?? '???';
                             const componentId = (componentDataModel.name ?? '???').toLowerCase();
-                            const componentCategoryId = pluralise(componentKind).toLowerCase();
+                            const componentCategoryId = pluralise(componentKind)
+                                .toLowerCase()
+                                .replaceAll(/ /g, '');
                             const inputFilePath = `${entryPointId}.${componentId}.md`;
                             const permalink = `${outputBaseUrl}/${entryPointId}/` +
                                 `${componentCategoryId}/${componentId}`;

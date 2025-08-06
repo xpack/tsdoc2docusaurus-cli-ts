@@ -134,7 +134,9 @@ export class ViewModel {
               const componentId: string = (
                 componentDataModel.name ?? '???'
               ).toLowerCase()
-              const componentCategoryId = pluralise(componentKind).toLowerCase()
+              const componentCategoryId = pluralise(componentKind)
+                .toLowerCase()
+                .replaceAll(/ /g, '')
 
               const inputFilePath = `${entryPointId}.${componentId}.md`
               const permalink =
