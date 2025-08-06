@@ -14,55 +14,7 @@
 /**
  * @public
  */
-export interface EntryPoint {
-  kind: string
-
-  inputFilePath: string
-  permalink: string
-
-  frontMatterSlug: string
-  frontMatterTitle: string
-
-  sidebarLabel: string
-  sidebarId: string
-
-  outputFilePath: string
-
-  // Map of array of components, by kind (Class, Interface, ...)
-  componentsMap: Map<string, Component[]>
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
-}
-
-/**
- * @public
- */
-export interface Component {
-  kind: string
-
-  inputFilePath: string
-  permalink: string
-
-  frontMatterSlug: string
-  frontMatterTitle: string
-
-  sidebarLabel: string
-  sidebarId: string
-
-  outputFilePath: string
-
-  // Map of array of members, by kind (Constructor, Property, ...)
-  membersMap: Map<string, Member[]>
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
-}
-
-/**
- * @public
- */
-export interface Member {
+export interface Base {
   kind: string
 
   inputFilePath: string
@@ -76,6 +28,14 @@ export interface Member {
 
   outputFilePath: string
   // isHidden?: boolean
+}
+
+/**
+ * @public
+ */
+export interface EntryPoint extends Base {
+  // Map of array of components, by kind (Class, Interface, ...)
+  componentsMap: Map<string, Component[]>
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any
@@ -84,20 +44,27 @@ export interface Member {
 /**
  * @public
  */
-export interface TopIndex {
-  kind: string
+export interface Component extends Base {
+  // Map of array of members, by kind (Constructor, Property, ...)
+  membersMap: Map<string, Member[]>
 
-  inputFilePath: string
-  permalink: string
-
-  frontMatterSlug: string
-  frontMatterTitle: string
-
-  sidebarLabel: string
-  sidebarId: string
-
-  outputFilePath: string
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
 }
+
+/**
+ * @public
+ */
+export interface Member extends Base {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any
+}
+
+/**
+ * @public
+ */
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface TopIndex extends Base {}
 
 /**
  * @public

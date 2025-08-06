@@ -14,10 +14,7 @@
 import assert from 'node:assert'
 import * as fs from 'node:fs/promises'
 import * as path from 'node:path'
-import * as util from 'node:util'
-
-// https://www.npmjs.com/package/commander
-import { Command } from 'commander'
+// import * as util from 'node:util'
 
 // ----------------------------------------------------------------------------
 
@@ -32,6 +29,8 @@ export interface Redirects {
  * @public
  */
 export type CliConfigurationOptions = Record<string, string | boolean>
+
+export type CommandOptions = Record<string, string | boolean | undefined>
 
 /**
  * Options, when multi-configurations are used.
@@ -123,15 +122,16 @@ export class CliOptions {
   /** String identifier in case of multiple instances. */
   id: string
 
-  constructor(argv: string[]) {
-    const program = new Command()
+  constructor(commandOptions: CommandOptions) {
+    this.id = commandOptions.id as string
 
-    program.option('--id <name>', 'id, for multi-configurations')
-    program.parse(argv)
+    if (commandOptions.verbose !== undefined) {
+      this.verbose = true
+    }
 
-    const programOptions = program.opts()
-
-    this.id = (programOptions.id as string | undefined) ?? 'default'
+    if (commandOptions.debug !== undefined) {
+      this.debug = true
+    }
 
     if (this.id !== 'default') {
       this.apiFolderPath = this.id
@@ -211,9 +211,10 @@ export class CliOptions {
       }
     }
 
-    console.log(configurationOptions)
-
     if (configurationOptions !== undefined) {
+      if (this.debug) {
+        console.log(configurationOptions)
+      }
       // Override only properties that exist in CliOptions
       const thisProperties = Object.getOwnPropertyNames(this)
 
@@ -233,9 +234,13 @@ export class CliOptions {
       }
     }
 
+    if (this.debug) {
+      this.verbose = true
+    }
+
     if (this.verbose) {
       console.log()
-      console.log('configuration:', util.inspect(this))
+      console.log(this)
     }
 
     assert(
@@ -271,7 +276,11 @@ export class CliOptions {
         configurationOptions.id = this.id
       }
     } else {
-      configurationOptions = multiConfigurations as CliConfigurationOptions
+      const multiConfig = multiConfigurations as MultiConfigurations
+      configurationOptions =
+        'default' in multiConfig
+          ? multiConfig.default
+          : (multiConfigurations as CliConfigurationOptions)
     }
     return configurationOptions
   }

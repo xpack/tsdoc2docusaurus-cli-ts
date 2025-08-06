@@ -12,9 +12,6 @@
 import assert from 'node:assert';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import * as util from 'node:util';
-// https://www.npmjs.com/package/commander
-import { Command } from 'commander';
 // ----------------------------------------------------------------------------
 /**
  * Options, as seen by the application. Most are mandatory.
@@ -75,12 +72,14 @@ export class CliOptions {
     debug = false;
     /** String identifier in case of multiple instances. */
     id;
-    constructor(argv) {
-        const program = new Command();
-        program.option('--id <name>', 'id, for multi-configurations');
-        program.parse(argv);
-        const programOptions = program.opts();
-        this.id = programOptions.id ?? 'default';
+    constructor(commandOptions) {
+        this.id = commandOptions.id;
+        if (commandOptions.verbose !== undefined) {
+            this.verbose = true;
+        }
+        if (commandOptions.debug !== undefined) {
+            this.debug = true;
+        }
         if (this.id !== 'default') {
             this.apiFolderPath = this.id;
             this.apiBaseUrl = this.id;
@@ -140,8 +139,10 @@ export class CliOptions {
                 /* Cannot read/parse JSON */
             }
         }
-        console.log(configurationOptions);
         if (configurationOptions !== undefined) {
+            if (this.debug) {
+                console.log(configurationOptions);
+            }
             // Override only properties that exist in CliOptions
             const thisProperties = Object.getOwnPropertyNames(this);
             for (const key of thisProperties) {
@@ -159,9 +160,12 @@ export class CliOptions {
                 }
             }
         }
+        if (this.debug) {
+            this.verbose = true;
+        }
         if (this.verbose) {
             console.log();
-            console.log('configuration:', util.inspect(this));
+            console.log(this);
         }
         assert(this.apiJsonInputFolderPath.length > 0, 'apiJsonInputFolderPath is required');
         assert(this.docsFolderPath.length > 0, 'docsFolderPath is required');
@@ -179,7 +183,11 @@ export class CliOptions {
             }
         }
         else {
-            configurationOptions = multiConfigurations;
+            const multiConfig = multiConfigurations;
+            configurationOptions =
+                'default' in multiConfig
+                    ? multiConfig.default
+                    : multiConfigurations;
         }
         return configurationOptions;
     }
