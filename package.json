@@ -58,7 +58,9 @@
     "url": "https://github.com/xpack/tsdoc2docusaurus-ts/issues"
   },
   "homepage": "https://xpack.github.io/tsdoc2docusaurus-ts/",
-  "dependencies": {},
+  "dependencies": {
+    "commander": "^14.0.0"
+  },
   "devDependencies": {
     "@eslint/js": "^9.31.0",
     "@tsconfig/node20": "^20.1.6",
