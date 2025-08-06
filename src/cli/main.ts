@@ -18,7 +18,7 @@ import { fileURLToPath } from 'node:url'
 // import * as util from 'node:util'
 
 import { formatDuration } from '../docusaurus/utils.js'
-import { CliOptions } from '../docusaurus/cli-options.js'
+import { CliOptions, CommandOptions } from '../docusaurus/cli-options.js'
 import { Workspace } from '../docusaurus/workspace.js'
 import { DocusaurusGenerator } from '../docusaurus/generator.js'
 import { DataModel } from '../tsdoc/data-model.js'
@@ -82,7 +82,7 @@ export async function main(argv: string[]): Promise<number> {
   const verbose = programOptions.verbose as boolean | undefined
   const debug = programOptions.debug as boolean | undefined
 
-  const commandOptions = { id, verbose, debug }
+  const commandOptions: CommandOptions = { id, verbose, debug }
   const options = new CliOptions(commandOptions)
   await options.parse()
 
