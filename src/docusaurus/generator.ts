@@ -51,8 +51,10 @@ export class DocusaurusGenerator {
     const sidebarCategory = this.generateSidebarCategory()
     await this.writeSidebarFile(sidebarCategory)
 
-    const navbarItem = this.generateNavbarItem()
-    await this.writeMenuFile(navbarItem)
+    if (this.options.navbarFilePath.trim().length > 0) {
+      const navbarItem = this.generateNavbarItem()
+      await this.writeNavbarFile(navbarItem)
+    }
 
     await this.copyCssFile()
 
@@ -84,35 +86,68 @@ export class DocusaurusGenerator {
     filePath,
     frontMatter,
     lines,
+    toolVersion,
   }: {
     filePath: string
     frontMatter: FrontMatter
     lines: string[]
+    toolVersion?: string
   }): Promise<void> {
-    const header = [
-      '---',
-      // '',
-      // '# DO NOT EDIT!',
-      // '# Automatically generated via tsdoc2docusaurus by API Documenter.',
-      // '',
-      `slug: ${frontMatter.slug}`,
-      `title: ${frontMatter.title}`,
-      'custom_edit_url: null',
-      '---',
-      '',
-      '<div class="tsdocPage">',
-      '',
-    ]
+    const header = []
+    header.push('---')
+    header.push('')
+    header.push('# DO NOT EDIT!')
+    header.push(
+      '# Automatically generated via tsdoc2docusaurus by API Documenter.'
+    )
+    header.push('')
+    header.push(`slug: ${frontMatter.slug}`)
+    header.push(`title: ${frontMatter.title}`)
+    header.push('custom_edit_url: null')
+    header.push('---')
+    header.push('')
+    header.push('<div class="tsdocPage">')
+    header.push('')
+    header.push('')
 
-    const footer = ['</div>']
+    const footer = []
 
-    const outputContent = header.concat(lines).concat(footer).join('\n')
+    footer.push('<hr/>')
+    footer.push('')
+
+    let text = ''
+    text += '<p class="doxyGeneratedBy">Generated via '
+    text += '<a href="https://xpack.github.io/doxygen2docusaurus">'
+    text += 'tsdoc2docusaurus</a> '
+    assert(this.workspace.dataModel.projectVersion !== undefined)
+    text += this.workspace.dataModel.projectVersion
+    text += ' by '
+    text += '<a href="https://api-extractor.com">API Extractor/Documenter</a>'
+    if (toolVersion !== undefined && toolVersion.length > 0) {
+      text += ' '
+      text += toolVersion
+    }
+    text += '.'
+    text += '</p>'
+
+    footer.push(text)
+    footer.push('')
+    footer.push('</div>')
+    footer.push('')
+
     await fs.mkdir(path.dirname(filePath), { recursive: true })
 
     if (this.options.verbose) {
       console.log(`Writing ${filePath}...`)
     }
-    await fs.writeFile(filePath, outputContent, 'utf8')
+
+    const fileHandle = await fs.open(filePath, 'ax')
+
+    await fileHandle.write(header.join('\n'))
+    await fileHandle.write(lines.join('\n'))
+    await fileHandle.write(footer.join('\n'))
+
+    await fileHandle.close()
 
     this.writtenFilesCount += 1
   }
@@ -179,9 +214,7 @@ export class DocusaurusGenerator {
 
   async generateMdFiles(): Promise<void> {
     const viewModel = this.workspace.viewModel
-    const options = this.workspace.options
-
-    const { entryPointsSet } = viewModel
+    const options = this.options
 
     if (!options.verbose) {
       console.log('Writing .md files...')
@@ -216,6 +249,8 @@ export class DocusaurusGenerator {
 
     // ------------------------------------------------------------------------
 
+    const { entryPointsSet } = viewModel
+
     for (const entryPoint of entryPointsSet) {
       // console.log(entryPoint)
       const lines = await this.readInputFileLines(
@@ -232,10 +267,13 @@ export class DocusaurusGenerator {
         title: entryPoint.frontMatterTitle,
       }
 
+      const toolVersion = entryPoint.toolVersion
+
       await this.writeOutputMdFile({
         filePath: `${outputFolderPath}/${entryPoint.outputFilePath}`,
         frontMatter,
         lines: patchLinesLines,
+        toolVersion,
       })
 
       // ----------------------------------------------------------------------
@@ -264,6 +302,7 @@ export class DocusaurusGenerator {
             filePath: `${outputFolderPath}/${compound.outputFilePath}`,
             frontMatter,
             lines: patchLinesLines,
+            toolVersion,
           })
 
           // ------------------------------------------------------------------
@@ -297,6 +336,7 @@ export class DocusaurusGenerator {
                   filePath: `${outputFolderPath}/${member.outputFilePath}`,
                   frontMatter,
                   lines: patchLinesLines,
+                  toolVersion,
                 })
               }
             }
@@ -312,7 +352,7 @@ export class DocusaurusGenerator {
 
   generateSidebarCategory(): SidebarCategory {
     const viewModel = this.workspace.viewModel
-    // const options = this.workspace.options
+    // const options = this.options
 
     const { entryPointsSet } = this.workspace.viewModel
 
@@ -400,7 +440,7 @@ export class DocusaurusGenerator {
   }
 
   generateNavbarItem(): NavbarItem {
-    const options = this.workspace.options
+    const options = this.options
 
     const navbarItem: NavbarItem = {
       label: options.navbarLabel,
@@ -417,17 +457,17 @@ export class DocusaurusGenerator {
     // console.log(util.inspect(sidebar, { compact: false, depth: 999 }));
     // Write the sidebar to file.
 
-    const sidebarFilePath = this.workspace.options.sidebarCategoryFilePath
+    const sidebarFilePath = this.options.sidebarCategoryFilePath
     console.log(`Writing sidebar file ${sidebarFilePath}...`)
     const sidebarJson = JSON.stringify(sidebarCategory, null, 2)
     await fs.writeFile(sidebarFilePath, sidebarJson)
   }
 
-  async writeMenuFile(navbarItem: NavbarItem): Promise<void> {
+  async writeNavbarFile(navbarItem: NavbarItem): Promise<void> {
     // console.log(util.inspect(navbarItem, { compact: false, depth: 999 }));
     // Write the sidebar to file.
 
-    const navbarFilePath = this.workspace.options.navbarFilePath
+    const navbarFilePath = this.options.navbarFilePath
     console.log(`Writing navbar file ${navbarFilePath}...`)
 
     const navbarJson = JSON.stringify(navbarItem, null, 2)
@@ -442,7 +482,7 @@ export class DocusaurusGenerator {
       'custom.css'
     )
 
-    const toFilePath = this.workspace.options.customCssFilePath
+    const toFilePath = this.options.customCssFilePath
     await fs.mkdir(path.dirname(toFilePath), { recursive: true })
 
     console.log(`Copying css file ${toFilePath}...`)

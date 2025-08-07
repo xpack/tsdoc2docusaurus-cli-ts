@@ -37,6 +37,8 @@ export interface EntryPoint extends Base {
   // Map of array of components, by kind (Class, Interface, ...)
   componentsMap: Map<string, Component[]>
 
+  toolVersion: string
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any
 }

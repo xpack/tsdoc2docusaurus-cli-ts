@@ -92,6 +92,7 @@ export async function main(argv: string[]): Promise<number> {
 
   const dataModel = new DataModel(options)
   await dataModel.parse()
+  dataModel.projectVersion = packageVersion
 
   const workspace = new Workspace(dataModel)
 

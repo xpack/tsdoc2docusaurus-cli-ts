@@ -18,6 +18,7 @@ import path from 'node:path';
 export class DataModel {
     options;
     jsons;
+    projectVersion;
     constructor(options) {
         this.options = options;
         this.jsons = [];

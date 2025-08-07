@@ -42,6 +42,8 @@ export class ViewModel {
         permalinksMapByPath.set(topIndex.inputFilePath, topIndex.permalink);
         const entryPointsSet = new Set();
         for (const json of dataModel.jsons) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+            const toolVersion = json.metadata.toolVersion;
             if (json.members !== undefined) {
                 for (const entryPointDataModel of json.members) {
                     if (options.debug) {
@@ -71,6 +73,7 @@ export class ViewModel {
                         outputFilePath,
                         // Map of array of components, by kind (Class, Interface, ...)
                         componentsMap: new Map(),
+                        toolVersion,
                         data: entryPointDataModel,
                     };
                     entryPointsSet.add(entryPoint);

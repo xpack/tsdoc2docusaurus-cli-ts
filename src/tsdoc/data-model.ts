@@ -94,6 +94,8 @@ export class DataModel {
 
   jsons: DataModelJson[]
 
+  projectVersion?: string
+
   constructor(options: CliOptions) {
     this.options = options
 
