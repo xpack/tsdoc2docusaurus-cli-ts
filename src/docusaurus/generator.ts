@@ -394,6 +394,10 @@ export class DocusaurusGenerator {
         const kindCategory: SidebarCategoryItem = {
           type: 'category',
           label: compoundCategoryLabel,
+          link: {
+            type: 'doc',
+            id: entryPoint.sidebarId,
+          },
           className: 'tsdocEllipsis',
           collapsed: true,
           items: [],
