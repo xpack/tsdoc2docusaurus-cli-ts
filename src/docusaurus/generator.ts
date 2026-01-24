@@ -74,6 +74,7 @@ export class DocusaurusGenerator {
       // The folder does not exist, nothing to remove.
     }
     // Create the folder as empty.
+    // console.log(`Creating output folder ${outputFolderPath}...`)
     await fs.mkdir(outputFolderPath, { recursive: true })
   }
 
@@ -102,7 +103,11 @@ export class DocusaurusGenerator {
     )
     header.push('')
     header.push(`slug: ${frontMatter.slug}`)
-    header.push(`title: ${frontMatter.title}`)
+
+    const title = frontMatter.title.replace(/ typealias$/, ' type alias')
+    // console.log(frontMatter.title, '->', title)
+    header.push(`title: ${title}`)
+
     header.push('custom_edit_url: null')
     header.push('---')
     header.push('')
@@ -116,8 +121,8 @@ export class DocusaurusGenerator {
     footer.push('')
 
     let text = ''
-    text += '<p class="doxyGeneratedBy">Generated via '
-    text += '<a href="https://xpack.github.io/doxygen2docusaurus">'
+    text += '<p class="tsdocGeneratedBy">Generated via '
+    text += '<a href="https://xpack.github.io/tsdoc2docusaurus">'
     text += 'tsdoc2docusaurus</a> '
     assert(this.workspace.dataModel.projectVersion !== undefined)
     text += this.workspace.dataModel.projectVersion
