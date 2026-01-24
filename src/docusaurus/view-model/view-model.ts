@@ -24,9 +24,6 @@ import {
 
 // ----------------------------------------------------------------------------
 
-/**
- * @public
- */
 export class ViewModel {
   options: CliOptions
 

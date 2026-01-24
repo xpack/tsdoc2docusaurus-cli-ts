@@ -32,8 +32,6 @@ import { Command } from 'commander'
  *
  * @param argv - Command line arguments array
  * @returns Promise that resolves to the exit code (0 for success, 1 for error)
- *
- * @public
  */
 export async function main(argv: string[]): Promise<number> {
   const startTime = Date.now()

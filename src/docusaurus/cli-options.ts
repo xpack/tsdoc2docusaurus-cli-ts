@@ -25,8 +25,6 @@ export interface Redirects {
 
 /**
  * Options, as written by the user in the configuration file.
- *
- * @public
  */
 export type CliConfigurationOptions = Record<string, string | boolean>
 
@@ -34,8 +32,6 @@ export type CommandOptions = Record<string, string | boolean | undefined>
 
 /**
  * Options, when multi-configurations are used.
- *
- * @public
  */
 export type MultiConfigurations = Record<string, CliConfigurationOptions>
 
@@ -52,8 +48,6 @@ interface GenericPackageConfiguration {
  *
  * @remarks
  * If the user does not provide them, the defaults are used.
- *
- * @public
  */
 export class CliOptions {
   /**

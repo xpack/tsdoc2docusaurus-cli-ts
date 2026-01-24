@@ -11,9 +11,6 @@
 
 // ----------------------------------------------------------------------------
 
-/**
- * @public
- */
 export interface Base {
   kind: string
 
@@ -30,9 +27,6 @@ export interface Base {
   // isHidden?: boolean
 }
 
-/**
- * @public
- */
 export interface EntryPoint extends Base {
   // Map of array of components, by kind (Class, Interface, ...)
   componentsMap: Map<string, Component[]>
@@ -43,9 +37,6 @@ export interface EntryPoint extends Base {
   data: any
 }
 
-/**
- * @public
- */
 export interface Component extends Base {
   // Map of array of members, by kind (Constructor, Property, ...)
   membersMap: Map<string, Member[]>
@@ -54,23 +45,14 @@ export interface Component extends Base {
   data: any
 }
 
-/**
- * @public
- */
 export interface Member extends Base {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   data: any
 }
 
-/**
- * @public
- */
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 export interface TopIndex extends Base {}
 
-/**
- * @public
- */
 export type EntryPointsSet = Set<EntryPoint>
 
 export interface ViewModel {
