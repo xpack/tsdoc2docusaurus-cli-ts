@@ -82,7 +82,7 @@ export class CliOptions {
 
   /**
    * Relative to the current website folder, default
-   * `sidebar-category-doxygen.json`.
+   * `sidebar-category-tsdoc.json`.
    */
   sidebarCategoryFilePath = 'sidebar-category-tsdoc.json'
 
@@ -103,7 +103,7 @@ export class CliOptions {
 
   /**
    * Relative to the current website folder, default
-   * `src/css/custom-doxygen.css`.
+   * `src/css/custom-tsdoc2docusaurus.css`.
    */
   customCssFilePath = 'src/css/custom-tsdoc2docusaurus.css'
 
@@ -182,7 +182,7 @@ export class CliOptions {
     if (configurationOptions === undefined) {
       try {
         // Try to get the configuration from
-        // package.json/[config/]doxygen2docusaurus.
+        // package.json/[config/]tsdoc2docusaurus.
         const userPackageJsonPath = path.resolve(process.cwd(), 'package.json')
         const pkgJsonRaw = await fs.readFile(userPackageJsonPath, 'utf8')
 

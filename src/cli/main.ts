@@ -36,7 +36,7 @@ import { Command } from 'commander'
 export async function main(argv: string[]): Promise<number> {
   const startTime = Date.now()
 
-  // Like .../doxygen2docusaurus/dist/cli
+  // Like .../tsdoc2docusaurus/dist/cli
   const __dirname = path.dirname(fileURLToPath(import.meta.url))
   const packageJsonPath = path.join(
     path.dirname(path.dirname(__dirname)),
