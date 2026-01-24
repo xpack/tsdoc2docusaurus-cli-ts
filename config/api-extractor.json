@@ -239,7 +239,7 @@
      * SUPPORTED TOKENS: none
      * DEFAULT VALUE: ""
      */
-    "projectFolderUrl": "https://github.com/xpack/doxygen2docusaurus-ts/tree/development"
+    "projectFolderUrl": "https://github.com/xpack/tsdoc2docusaurus-ts/tree/development"
   },
   /**
    * Configures how the .d.ts rollup file will be generated.
