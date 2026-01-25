@@ -4,12 +4,33 @@
 
 ```ts
 
+// @public (undocumented)
+interface Base {
+    // (undocumented)
+    frontMatterSlug: string;
+    // (undocumented)
+    frontMatterTitle: string;
+    // (undocumented)
+    inputFilePath: string;
+    // (undocumented)
+    kind: string;
+    // (undocumented)
+    outputFilePath: string;
+    // (undocumented)
+    permalink: string;
+    // (undocumented)
+    sidebarId: string;
+    // (undocumented)
+    sidebarLabel: string;
+}
+
 // @public
 export type CliConfigurationOptions = Record<string, string | boolean>;
 
 // @public
 export class CliOptions {
-    constructor(argv: string[]);
+    // Warning: (ae-forgotten-export) The symbol "CommandOptions" needs to be exported by the entry point index.d.ts
+    constructor(commandOptions: CommandOptions);
     apiBaseUrl: string;
     apiFolderPath: string;
     apiJsonInputFolderPath: string;
@@ -26,43 +47,36 @@ export class CliOptions {
     // (undocumented)
     parse(): Promise<void>;
     // (undocumented)
-    selectMultiConfiguration(multiConfigurations: CliConfigurationOptions | MultiConfigurations, id: string | undefined): CliConfigurationOptions | undefined;
+    selectMultiConfiguration(multiConfigurations: CliConfigurationOptions | MultiConfigurations): CliConfigurationOptions | undefined;
     sidebarCategoryFilePath: string;
     sidebarCategoryLabel: string;
     verbose: boolean;
 }
 
 // @public (undocumented)
-export interface Component {
+type CommandOptions = Record<string, string | boolean | undefined>;
+
+// Warning: (ae-forgotten-export) The symbol "Base" needs to be exported by the entry point index.d.ts
+//
+// @public (undocumented)
+export interface Component extends Base {
     // (undocumented)
     data: any;
     // (undocumented)
-    frontMatterSlug: string;
-    // (undocumented)
-    frontMatterTitle: string;
-    // (undocumented)
-    inputFilePath: string;
-    // (undocumented)
-    kind: string;
-    // (undocumented)
     membersMap: Map<string, Member[]>;
-    // (undocumented)
-    outputFilePath: string;
-    // (undocumented)
-    permalink: string;
-    // (undocumented)
-    sidebarId: string;
-    // (undocumented)
-    sidebarLabel: string;
 }
 
 // @public (undocumented)
 export class DataModel {
-    constructor();
+    constructor(options: CliOptions);
     // (undocumented)
     jsons: DataModelJson[];
     // (undocumented)
-    parse(options: CliOptions): Promise<void>;
+    options: CliOptions;
+    // (undocumented)
+    parse(): Promise<void>;
+    // (undocumented)
+    projectVersion?: string;
 }
 
 // @public (undocumented)
@@ -152,27 +166,13 @@ export interface DataModelTypeTokenRange {
 }
 
 // @public (undocumented)
-export interface EntryPoint {
+export interface EntryPoint extends Base {
     // (undocumented)
     componentsMap: Map<string, Component[]>;
     // (undocumented)
     data: any;
     // (undocumented)
-    frontMatterSlug: string;
-    // (undocumented)
-    frontMatterTitle: string;
-    // (undocumented)
-    inputFilePath: string;
-    // (undocumented)
-    kind: string;
-    // (undocumented)
-    outputFilePath: string;
-    // (undocumented)
-    permalink: string;
-    // (undocumented)
-    sidebarId: string;
-    // (undocumented)
-    sidebarLabel: string;
+    toolVersion: string;
 }
 
 // @public (undocumented)
@@ -182,62 +182,58 @@ export type EntryPointsSet = Set<EntryPoint>;
 export function main(argv: string[]): Promise<number>;
 
 // @public (undocumented)
-export interface Member {
+export interface Member extends Base {
     // (undocumented)
     data: any;
-    // (undocumented)
-    frontMatterSlug: string;
-    // (undocumented)
-    frontMatterTitle: string;
-    // (undocumented)
-    inputFilePath: string;
-    // (undocumented)
-    kind: string;
-    // (undocumented)
-    outputFilePath: string;
-    // (undocumented)
-    permalink: string;
-    // (undocumented)
-    sidebarId: string;
-    // (undocumented)
-    sidebarLabel: string;
 }
 
 // @public
 export type MultiConfigurations = Record<string, CliConfigurationOptions>;
 
 // @public (undocumented)
-export interface TopIndex {
-    // (undocumented)
-    frontMatterSlug: string;
-    // (undocumented)
-    frontMatterTitle: string;
-    // (undocumented)
-    inputFilePath: string;
-    // (undocumented)
-    kind: string;
-    // (undocumented)
-    outputFilePath: string;
-    // (undocumented)
-    permalink: string;
-    // (undocumented)
-    sidebarId: string;
-    // (undocumented)
-    sidebarLabel: string;
+export interface TopIndex extends Base {
 }
 
 // @public (undocumented)
 export class ViewModel {
-    constructor({ dataModel, options, }: {
-        dataModel: DataModel;
-        options: CliOptions;
-    });
+    constructor(workspace: Workspace);
     // (undocumented)
     entryPointsSet: EntryPointsSet;
+    // (undocumented)
+    options: CliOptions;
     // (undocumented)
     permalinksMapByPath: Map<string, string>;
     // (undocumented)
     topIndex: TopIndex;
+    // Warning: (ae-forgotten-export) The symbol "Workspace" needs to be exported by the entry point index.d.ts
+    //
+    // (undocumented)
+    workspace: Workspace;
+}
+
+// @public (undocumented)
+class Workspace {
+    constructor(dataModel: DataModel);
+    // (undocumented)
+    absoluteBaseUrl: string;
+    // (undocumented)
+    dataModel: DataModel;
+    // (undocumented)
+    menuBaseUrl: string;
+    // (undocumented)
+    options: CliOptions;
+    // (undocumented)
+    outputFolderPath: string;
+    // (undocumented)
+    pageBaseUrl: string;
+    // (undocumented)
+    projectPath: string;
+    // (undocumented)
+    sidebarBaseId: string;
+    // (undocumented)
+    slugBaseUrl: string;
+    // (undocumented)
+    viewModel: ViewModel;
 }
 
 // (No @packageDocumentation comment for this package)

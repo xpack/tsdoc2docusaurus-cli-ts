@@ -10,9 +10,6 @@
  */
 import { pluralise } from '../utils.js';
 // ----------------------------------------------------------------------------
-/**
- * @public
- */
 export class ViewModel {
     options;
     workspace;
@@ -64,6 +61,7 @@ export class ViewModel {
                     const outputFilePath = `${entryPointId}.md`;
                     const entryPoint = {
                         kind: entryPointKind,
+                        id: entryPointId,
                         inputFilePath,
                         permalink,
                         frontMatterSlug,
@@ -98,12 +96,25 @@ export class ViewModel {
                             if (componentKind === 'Function') {
                                 componentTitle += '()';
                             }
+                            const docCommentLines = componentDataModel.docComment.split('\n');
+                            let componentSummary = '';
+                            for (const line of docCommentLines) {
+                                const trimmedLine = line
+                                    .replace(/^\s*\/\*\*/, '')
+                                    .replace(/^\s*\*/g, '')
+                                    .trim();
+                                if (trimmedLine.length > 0) {
+                                    componentSummary = trimmedLine;
+                                    break;
+                                }
+                            }
                             const frontMatterTitle = componentTitle + ' ' + componentKind.toLowerCase();
                             const sidebarLabel = componentTitle;
                             const sidebarId = `${options.apiFolderPath}/${entryPointId}/` +
                                 `${componentCategoryId}/${componentId}`;
-                            // eslint-disable-next-line max-len
-                            const outputFilePath = `${entryPointId}/${componentCategoryId}/${componentId}.md`;
+                            const filteredFilename = componentId === 'index' ? '$index' : componentId;
+                            const outputFilePath = `${entryPointId}/${componentCategoryId}/` +
+                                `${filteredFilename}.md`;
                             const component = {
                                 kind: componentKind,
                                 inputFilePath,
@@ -115,6 +126,7 @@ export class ViewModel {
                                 outputFilePath,
                                 // Map of array of members, by kind (Constructor, Property, ...)
                                 membersMap: new Map(),
+                                summary: componentSummary,
                                 data: componentDataModel,
                             };
                             let componentsArray = entryPoint.componentsMap.get(componentDataModel.kind);

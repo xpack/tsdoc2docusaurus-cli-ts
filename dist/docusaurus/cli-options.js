@@ -18,8 +18,6 @@ import * as path from 'node:path';
  *
  * @remarks
  * If the user does not provide them, the defaults are used.
- *
- * @public
  */
 export class CliOptions {
     /**
@@ -47,7 +45,7 @@ export class CliOptions {
     apiBaseUrl;
     /**
      * Relative to the current website folder, default
-     * `sidebar-category-doxygen.json`.
+     * `sidebar-category-tsdoc.json`.
      */
     sidebarCategoryFilePath = 'sidebar-category-tsdoc.json';
     /** Short text to be displayed in the sidebar. */
@@ -63,7 +61,7 @@ export class CliOptions {
     navbarPosition = 'left';
     /**
      * Relative to the current website folder, default
-     * `src/css/custom-doxygen.css`.
+     * `src/css/custom-tsdoc2docusaurus.css`.
      */
     customCssFilePath = 'src/css/custom-tsdoc2docusaurus.css';
     /** Boolean to control verbosity. */
@@ -123,7 +121,7 @@ export class CliOptions {
         if (configurationOptions === undefined) {
             try {
                 // Try to get the configuration from
-                // package.json/[config/]doxygen2docusaurus.
+                // package.json/[config/]tsdoc2docusaurus.
                 const userPackageJsonPath = path.resolve(process.cwd(), 'package.json');
                 const pkgJsonRaw = await fs.readFile(userPackageJsonPath, 'utf8');
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

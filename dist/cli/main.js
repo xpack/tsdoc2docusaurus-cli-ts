@@ -27,12 +27,10 @@ import { Command } from 'commander';
  *
  * @param argv - Command line arguments array
  * @returns Promise that resolves to the exit code (0 for success, 1 for error)
- *
- * @public
  */
 export async function main(argv) {
     const startTime = Date.now();
-    // Like .../doxygen2docusaurus/dist/cli
+    // Like .../tsdoc2docusaurus/dist/cli
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const packageJsonPath = path.join(path.dirname(path.dirname(__dirname)), 'package.json');
     const packageJsonContent = await fs.readFile(packageJsonPath);
