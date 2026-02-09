@@ -558,12 +558,42 @@ export class DocusaurusGenerator {
   }
 
   generateNavbarItem(): NavbarItem {
+    const viewModel = this.workspace.viewModel
     const options = this.options
+
+    const items: NavbarItem[] = []
+
+    const { entryPointsSet } = viewModel
+    if (entryPointsSet.size > 1) {
+      for (const entryPoint of entryPointsSet) {
+        const url = `/${options.docsBaseUrl}${entryPoint.frontMatterSlug}`
+        const navbarItem: NavbarItem = {
+          label: entryPoint.sidebarLabel,
+          to: url,
+        }
+        items.push(navbarItem)
+      }
+    } else {
+      const entryPoint = [...entryPointsSet][0]
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [kind, compoundsArray] of entryPoint.componentsMap) {
+        const compoundCategoryLabel = pluralise(kind)
+        const url =
+          `/${options.docsBaseUrl}/${options.apiBaseUrl}/${entryPoint.id}/` +
+          compoundCategoryLabel.toLowerCase().replace(/ /g, '')
+        const navbarItem: NavbarItem = {
+          label: compoundCategoryLabel,
+          to: url,
+        }
+        items.push(navbarItem)
+      }
+    }
 
     const navbarItem: NavbarItem = {
       label: options.navbarLabel,
       position: options.navbarPosition,
       to: `/${options.docsBaseUrl}/${options.apiBaseUrl}`,
+      items,
     }
 
     return navbarItem
