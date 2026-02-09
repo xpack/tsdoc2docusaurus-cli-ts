@@ -51,4 +51,17 @@ export function pluralise(name: string): string {
   return name + 's?'
 }
 
+export function filterFileName(name: string): string {
+  // `index` may be used for the folder's index page.
+  // Prefix it with $ to avoid conflicts.
+  let filteredName = name == 'index' ? '$index' : name
+  // Docusaurus ignores files that start with an underscore.
+  // Surround with $ if the original name contains
+  // non-alphanumeric characters
+  if (name.startsWith('_')) {
+    filteredName = `$${filteredName}$`
+  }
+  return filteredName
+}
+
 // ----------------------------------------------------------------------------
