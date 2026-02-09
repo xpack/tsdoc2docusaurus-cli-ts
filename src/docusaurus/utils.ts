@@ -35,6 +35,12 @@ export function pluralise(name: string): string {
     Enum: 'Enums',
     Method: 'Methods',
     Property: 'Properties',
+    PropertySignature: 'PropertySignatures',
+    IndexSignature: 'IndexSignatures',
+    Constructor: 'Constructors',
+    CallSignature: 'CallSignatures',
+    GetSignature: 'GetSignatures',
+    SetSignature: 'SetSignatures',
   }
 
   if (Object.prototype.hasOwnProperty.call(plurals, name)) {
