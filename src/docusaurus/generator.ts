@@ -16,7 +16,7 @@ import path from 'node:path'
 import * as fs from 'node:fs/promises'
 
 import { Workspace } from './workspace.js'
-import { FrontMatter } from './view-model/types.js'
+import { Component, FrontMatter } from './view-model/types.js'
 import { CliOptions } from './cli-options.js'
 import {
   NavbarItem,
@@ -356,9 +356,84 @@ export class DocusaurusGenerator {
       for (const [compoundKind, compoundsArray] of entryPoint.componentsMap) {
         // console.log(`  ${compoundCategoryLabel}`)
         for (const compound of compoundsArray) {
-          // console.log(`    ${compound.label}`)
+          await this.generateComponentMdFilesRecursively({
+            compound,
+            toolVersion,
+          })
+        }
+      }
+    }
+
+    console.log(this.writtenFilesCount, 'files written')
+  }
+
+  async generateComponentMdFilesRecursively({
+    compound,
+    toolVersion,
+  }: {
+    compound: Component
+    toolVersion: string
+  }): Promise<void> {
+    const viewModel = this.workspace.viewModel
+    const options = this.options
+
+    const inputFolderPath = options.apiMarkdownInputFolderPath
+
+    const outputFolderPath =
+      options.docsFolderPath + '/' + options.apiFolderPath
+
+    // console.log(`    ${compound.label}`)
+    const lines = await this.readInputFileLines(
+      `${inputFolderPath}/${compound.inputFilePath}`
+    )
+
+    const patchLinesLines = this.patchLines(
+      lines,
+      viewModel.permalinksMapByPath
+    )
+
+    const frontMatter = {
+      slug: compound.frontMatterSlug,
+      title: compound.frontMatterTitle,
+    }
+
+    // TODO: Insert members into compound (future improvement).
+    await this.writeOutputMdFile({
+      filePath: `${outputFolderPath}/${compound.outputFilePath}`,
+      frontMatter,
+      lines: patchLinesLines,
+      toolVersion,
+    })
+
+    // ------------------------------------------------------------------------
+
+    if (compound.componentsMap.size > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [componentKind, componentsArray] of compound.componentsMap) {
+        for (const component of componentsArray) {
+          await this.generateComponentMdFilesRecursively({
+            compound: component,
+            toolVersion,
+          })
+        }
+      }
+    }
+
+    // ------------------------------------------------------------------------
+
+    if (compound.membersMap.size > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [memberKind, membersArray] of compound.membersMap) {
+        for (const member of membersArray) {
+          // if (member.isHidden === true) {
+          //   continue
+          // }
+
+          // console.log(
+          //   `      ${member.label} ${member.name} ${member.id}`
+          // )
           const lines = await this.readInputFileLines(
-            `${inputFolderPath}/${compound.inputFilePath}`
+            `${inputFolderPath}/${member.inputFilePath}`
           )
 
           const patchLinesLines = this.patchLines(
@@ -367,59 +442,19 @@ export class DocusaurusGenerator {
           )
 
           const frontMatter = {
-            slug: compound.frontMatterSlug,
-            title: compound.frontMatterTitle,
+            slug: member.frontMatterSlug,
+            title: member.frontMatterTitle,
           }
 
-          // TODO: Insert members into compound (future improvement).
           await this.writeOutputMdFile({
-            filePath: `${outputFolderPath}/${compound.outputFilePath}`,
+            filePath: `${outputFolderPath}/${member.outputFilePath}`,
             frontMatter,
             lines: patchLinesLines,
             toolVersion,
           })
-
-          // ------------------------------------------------------------------
-
-          if (compound.membersMap.size > 0) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            for (const [memberKind, membersArray] of compound.membersMap) {
-              for (const member of membersArray) {
-                // if (member.isHidden === true) {
-                //   continue
-                // }
-
-                // console.log(
-                //   `      ${member.label} ${member.name} ${member.id}`
-                // )
-                const lines = await this.readInputFileLines(
-                  `${inputFolderPath}/${member.inputFilePath}`
-                )
-
-                const patchLinesLines = this.patchLines(
-                  lines,
-                  viewModel.permalinksMapByPath
-                )
-
-                const frontMatter = {
-                  slug: member.frontMatterSlug,
-                  title: member.frontMatterTitle,
-                }
-
-                await this.writeOutputMdFile({
-                  filePath: `${outputFolderPath}/${member.outputFilePath}`,
-                  frontMatter,
-                  lines: patchLinesLines,
-                  toolVersion,
-                })
-              }
-            }
-          }
         }
       }
     }
-
-    console.log(this.writtenFilesCount, 'files written')
   }
 
   // --------------------------------------------------------------------------
