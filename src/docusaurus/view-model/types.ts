@@ -9,6 +9,8 @@
  * be obtained from https://opensource.org/licenses/MIT.
  */
 
+import { DataModelMember } from '../../index.js'
+
 // ----------------------------------------------------------------------------
 
 export interface Base {
@@ -29,29 +31,29 @@ export interface Base {
   // isHidden?: boolean
 }
 
-export interface EntryPoint extends Base {
+export interface NodeWithComponents extends Base {
   // Map of array of components, by kind (Class, Interface, ...)
   componentsMap: Map<string, Component[]>
+}
 
+export interface EntryPoint extends NodeWithComponents {
   toolVersion: string
 
   id: string
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
+  dataModel: DataModelMember
 }
 
-export interface Component extends Base {
+export interface Component extends NodeWithComponents {
   // Map of array of members, by kind (Constructor, Property, ...)
   membersMap: Map<string, Member[]>
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
+  dataModel: DataModelMember
 }
 
+// Leaf node, no component children.
 export interface Member extends Base {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data: any
+  dataModel: DataModelMember
 }
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
