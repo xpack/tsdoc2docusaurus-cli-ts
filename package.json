@@ -1,10 +1,10 @@
 {
   "name": "@xpack/tsdoc2docusaurus",
-  "version": "1.3.0",
+  "version": "1.3.0-pre",
   "description": "A CLI application to convert TSDoc files into Docusaurus documentation",
   "type": "module",
   "main": "./dist/index.js",
-  "typings": "./dist/tsdoc2docusaurus.d.ts",
+  "typings": "./dist/index.d.ts",
   "bin": {
     "tsdoc2docusaurus": "./bin/tsdoc2docusaurus.js"
   },
@@ -15,12 +15,12 @@
   "scripts": {
     "generate-top-commons": "bash node_modules/@xpack/npm-packages-helper/maintenance-scripts/generate-top-commons.sh --xpack",
     "prepare": "del-cli dist && npm run prettier && npm run lint && npm run compile",
-    "api-extractor": "api-extractor run --local --verbose",
-    "compile-watch": "tsc --build --verbose --watch src",
-    "compile": "tsc --build --verbose src",
-    "prettier": "prettier src --write",
+    "compile-watch": "tsc --build --verbose --watch",
+    "prettier": "prettier src tests/tap --write",
     "fix": "eslint --fix src",
-    "dev-cycle": "npm run fix && npm run compile && npm run test",
+    "compile": "tsc --project tsconfig.json",
+    "fix-compile": "npm run prettier && npm run fix && npm run compile",
+    "lint": "eslint src",
     "npm-install": "npm install",
     "npm-link-helpers": "npm link @xpack/npm-packages-helper @xpack/docusaurus-template-liquid",
     "npm-link": "npm link",
@@ -31,7 +31,6 @@
     "npm-version-minor": "npm version minor",
     "postversion": "git push origin --all && git push origin --tags",
     "git-log": "git log --pretty='%cd * %h %s' --date=short",
-    "lint": "eslint src",
     "pretest-coverage": "npm run lint",
     "pretest-no-coverage": "npm run lint",
     "test-coverage": "tap --show-full-coverage",
@@ -60,28 +59,22 @@
   },
   "homepage": "https://xpack.github.io/tsdoc2docusaurus-ts/",
   "dependencies": {
-    "commander": "^14.0.0"
+    "commander": "^14.0.2"
   },
   "devDependencies": {
-    "@eslint/js": "^9.31.0",
-    "@tsconfig/node20": "^20.1.6",
-    "@types/node": "^24.0.14",
+    "@eslint/js": "^9.39.2",
+    "@tsconfig/node20": "^20.1.8",
+    "@types/node": "^25.0.9",
     "@types/tap": "^15.0.12",
-    "del-cli": "^6.0.0",
-    "eslint": "^9.31.0",
+    "del-cli": "^7.0.0",
+    "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "json": "^11.0.0",
-    "liquidjs": "^10.19.1",
-    "prettier": "3.6.2",
+    "liquidjs": "^10.24.0",
+    "prettier": "3.8.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.38.0"
-  },
-  "prettier": {
-    "printWidth": 80,
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "es5"
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.53.1"
   },
   "topConfig": {
     "descriptiveName": "A CLI application to convert TSDoc files into Docusaurus documentation",
