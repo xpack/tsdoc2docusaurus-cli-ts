@@ -292,7 +292,8 @@ export class ViewModel {
       }
     }
 
-    for (const [kind, _] of component.componentsMap) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for (const [kind, _componentArray] of component.componentsMap) {
       // Process each component kind
       if (!parentNode.componentsMap.has(kind)) {
         parentNode.componentsMap.set(kind, [])
