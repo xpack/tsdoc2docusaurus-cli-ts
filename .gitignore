@@ -135,10 +135,6 @@ xpacks/
 
 .tap
 
-cjs/
-**/*.js.map
-**/*.d.ts
-**/*.d.ts.map
 
 # /docs/
 
