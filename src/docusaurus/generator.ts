@@ -63,7 +63,7 @@ export class DocusaurusGenerator {
 
   // https://nodejs.org/en/learn/manipulating-files/working-with-folders-in-nodejs
   async prepareOutputFolder(): Promise<void> {
-    const { outputFolderPath } = this.workspace
+    const outputFolderPath = this.workspace.outputFolderPath
     try {
       await fs.access(outputFolderPath)
       // Remove the folder if it exist.
@@ -230,7 +230,7 @@ export class DocusaurusGenerator {
       options.docsFolderPath + '/' + options.apiFolderPath
 
     {
-      const { topIndex } = viewModel
+      const topIndex = viewModel.topIndex
       const lines = await this.readInputFileLines(
         `${inputFolderPath}/${topIndex.inputFilePath}`
       )
@@ -254,7 +254,7 @@ export class DocusaurusGenerator {
 
     // ------------------------------------------------------------------------
 
-    const { entryPointsSet } = viewModel
+    const entryPointsSet = viewModel.entryPointsSet
 
     for (const entryPoint of entryPointsSet) {
       // console.log(entryPoint)
@@ -463,9 +463,9 @@ export class DocusaurusGenerator {
     const viewModel = this.workspace.viewModel
     // const options = this.options
 
-    const { entryPointsSet } = this.workspace.viewModel
+    const entryPointsSet = this.workspace.viewModel.entryPointsSet
 
-    const { topIndex } = viewModel
+    const topIndex = viewModel.topIndex
 
     const sidebarTopCategory: SidebarCategory = {
       type: 'category',
@@ -480,6 +480,7 @@ export class DocusaurusGenerator {
     }
 
     for (const entryPoint of entryPointsSet) {
+      // The very top level, with the library name.
       const entryPointCategory: SidebarCategory = {
         type: 'category',
         label: entryPoint.sidebarLabel,
@@ -500,6 +501,9 @@ export class DocusaurusGenerator {
           '/' +
           compoundCategoryLabel.toLowerCase().replace(/ /g, '') +
           '/index'
+
+        // The second level, with the component kinds (Classes,
+        // Interfaces, ...).
         const kindCategory: SidebarCategoryItem = {
           type: 'category',
           label: compoundCategoryLabel,
@@ -513,40 +517,49 @@ export class DocusaurusGenerator {
         }
         entryPointCategory.items.push(kindCategory)
 
+        // Third, fourth, etc levels, down to members, recursively.
+        // (namespaces can nest).
         for (const compound of compoundsArray) {
-          const compoundCategory: SidebarCategoryItem = {
-            type: 'category',
-            label: compound.sidebarLabel,
-            link: {
-              type: 'doc',
-              id: compound.sidebarId,
-            },
-            className: 'tsdocEllipsis',
-            collapsed: true,
-            items: [],
-          }
-          kindCategory.items.push(compoundCategory)
+          kindCategory.items.push(
+            this.generateSidebarCategoryRecursively({
+              kind,
+              compound,
+            })
+          )
+        }
 
-          if (compound.membersMap.size > 0) {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            for (const [memberKind, membersArray] of compound.membersMap) {
-              for (const member of membersArray) {
-                // Explicitly handle nullable boolean for isHidden
-                // if (member.isHidden === true) {
-                // console.warn(
-                //   `Skipping member without name in ${compoundLabel}: ` +
-                //   `${member.data.canonicalReference}`
-                // );
-                //  continue
-                // }
-
-                const memberDoc: SidebarDocItem = {
-                  type: 'doc',
-                  label: member.sidebarLabel,
+        for (const [
+          cousinKind,
+          cousinCompoundsArray,
+        ] of entryPoint.componentsMap) {
+          if (cousinKind !== kind) {
+            for (const cousinCompound of cousinCompoundsArray) {
+              if (cousinCompound.componentsMap.has(kind)) {
+                const compoundCategory2: SidebarCategoryItem = {
+                  type: 'category',
+                  label: cousinCompound.sidebarLabel,
+                  link: {
+                    type: 'doc',
+                    id: cousinCompound.sidebarId,
+                  },
                   className: 'tsdocEllipsis',
-                  id: member.sidebarId,
+                  collapsed: true,
+                  items: [],
                 }
-                compoundCategory.items.push(memberDoc)
+
+                if (cousinCompound.componentsMap.has(kind)) {
+                  for (const child of cousinCompound.componentsMap.get(kind) ??
+                    []) {
+                    compoundCategory2.items.push(
+                      this.generateSidebarCategoryRecursively({
+                        kind,
+                        compound: child,
+                      })
+                    )
+                  }
+                }
+
+                kindCategory.items.push(compoundCategory2)
               }
             }
           }
@@ -557,13 +570,69 @@ export class DocusaurusGenerator {
     return sidebarTopCategory
   }
 
+  generateSidebarCategoryRecursively({
+    kind,
+    compound,
+  }: {
+    kind: string
+    compound: Component
+  }): SidebarCategoryItem {
+    const compoundCategory: SidebarCategoryItem = {
+      type: 'category',
+      label: compound.sidebarLabel,
+      link: {
+        type: 'doc',
+        id: compound.sidebarId,
+      },
+      className: 'tsdocEllipsis',
+      collapsed: true,
+      items: [],
+    }
+
+    if (compound.componentsMap.has(kind)) {
+      for (const child of compound.componentsMap.get(kind) ?? []) {
+        compoundCategory.items.push(
+          this.generateSidebarCategoryRecursively({
+            kind,
+            compound: child,
+          })
+        )
+      }
+    }
+
+    if (compound.membersMap.size > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      for (const [memberKind, membersArray] of compound.membersMap) {
+        for (const member of membersArray) {
+          // Explicitly handle nullable boolean for isHidden
+          // if (member.isHidden === true) {
+          // console.warn(
+          //   `Skipping member without name in ${compoundLabel}: ` +
+          //   `${member.data.canonicalReference}`
+          // );
+          //  continue
+          // }
+
+          const memberDoc: SidebarDocItem = {
+            type: 'doc',
+            label: member.sidebarLabel,
+            className: 'tsdocEllipsis',
+            id: member.sidebarId,
+          }
+          compoundCategory.items.push(memberDoc)
+        }
+      }
+    }
+    return compoundCategory
+  }
+
   generateNavbarItem(): NavbarItem {
     const viewModel = this.workspace.viewModel
     const options = this.options
 
     const items: NavbarItem[] = []
 
-    const { entryPointsSet } = viewModel
+    const entryPointsSet = viewModel.entryPointsSet
     if (entryPointsSet.size > 1) {
       for (const entryPoint of entryPointsSet) {
         const url = `/${options.docsBaseUrl}${entryPoint.frontMatterSlug}`
