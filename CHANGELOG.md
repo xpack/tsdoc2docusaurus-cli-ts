@@ -8,7 +8,7 @@ and close existing issues and pull requests.
 
 ## 2026-02-10
 
-* v1.3.0 released
+* v1.3.1 released
 * ba6e409 package.json: add bin to files
 * 671b492 .gitignore update
 * 67e94d5 dist update
