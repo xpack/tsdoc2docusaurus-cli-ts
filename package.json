@@ -60,22 +60,22 @@
   },
   "homepage": "https://xpack.github.io/tsdoc2docusaurus-ts/",
   "dependencies": {
-    "commander": "^14.0.2"
+    "commander": "^14.0.3"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
-    "@tsconfig/node20": "^20.1.8",
-    "@types/node": "^25.0.9",
+    "@tsconfig/node20": "^20.1.9",
+    "@types/node": "^25.2.3",
     "@types/tap": "^15.0.12",
     "del-cli": "^7.0.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",
     "json": "^11.0.0",
     "liquidjs": "^10.24.0",
-    "prettier": "3.8.0",
+    "prettier": "3.8.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.53.1"
+    "typescript-eslint": "^8.55.0"
   },
   "topConfig": {
     "descriptiveName": "A CLI application to convert TSDoc files into Docusaurus documentation",
