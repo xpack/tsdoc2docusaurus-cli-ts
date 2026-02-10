@@ -63,12 +63,6 @@ export interface TopIndex extends Base {}
 
 export type EntryPointsSet = Set<EntryPoint>
 
-export interface ViewModel {
-  topIndex: TopIndex
-  entryPointsSet: EntryPointsSet
-  permalinksMapByPath: Map<string, string>
-}
-
 export interface FrontMatter {
   slug: string
   title: string
