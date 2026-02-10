@@ -6,8 +6,15 @@ Please check
 [GitHub](https://github.com/xpack/tsdoc2docusaurus-ts/issues)
 and close existing issues and pull requests.
 
+## 2026-02-11
+
+* 6cb6148 rename tsdoc2docusaurus-cli
+
 ## 2026-02-10
 
+* v1.3.2 released
+* 6097f89 package.json fix urls
+* 62684f2 README* updates
 * v1.3.1 released
 * ba6e409 package.json: add bin to files
 * 671b492 .gitignore update

@@ -111,7 +111,7 @@ To manually fix compliance with the style guide (where possible):
 ```console
 % npm run fix
 
-> @xpack/tsdoc2docusaurus-cli@1.3.1 fix
+> @xpack/tsdoc2docusaurus-cli@1.3.2 fix
 > ts-standard --fix src && standard --fix test
 ...
 ```
@@ -164,9 +164,9 @@ kept as a legacy CommonJS dependency.
 
 As required by npm modules, this one also uses [semver](https://semver.org).
 
-Determine the next version (like `1.3.1`),
+Determine the next version (like `1.3.2`),
 and eventually update the
-`package.json` file; the format is `1.3.1-pre`.
+`package.json` file; the format is `1.3.2-pre`.
 
 ### Fix possible open issues
 
@@ -184,8 +184,8 @@ related to the new version.
 - check the latest commits `npm run git-log`
 - open the `CHANGELOG.md` file
 - check if all previous fixed issues are in
-- add a line _* v1.3.1 released_
-- commit with a message like _prepare v1.3.1_
+- add a line _* v1.3.2 released_
+- commit with a message like _prepare v1.3.2_
 
 ## Prepare to publish
 
@@ -249,7 +249,7 @@ master branch, by a dedicated workflow in GitHub
 When the release is considered stable, promote it as `latest`:
 
 - `npm dist-tag ls @xpack/tsdoc2docusaurus-cli`
-- `npm dist-tag add @xpack/tsdoc2docusaurus-cli@1.3.1 latest`
+- `npm dist-tag add @xpack/tsdoc2docusaurus-cli@1.3.2 latest`
 - `npm dist-tag ls @xpack/tsdoc2docusaurus-cli`
 
 ## Useful links
