@@ -1,5 +1,5 @@
 [![GitHub package.json version](https://img.shields.io/github/package-json/v/xpack/tsdoc2docusaurus-cli-ts)](https://github.com/xpack/tsdoc2docusaurus-cli-ts/blob/master/package.json)
-[![npm (scoped)](https://img.shields.io/npm/v/@xpack/tsdoc2docusaurus.svg)](https://www.npmjs.com/package/@xpack/tsdoc2docusaurus/)
+[![npm (scoped)](https://img.shields.io/npm/v/@xpack/tsdoc2docusaurus-cli.svg)](https://www.npmjs.com/package/@xpack/tsdoc2docusaurus-cli/)
 [![license](https://img.shields.io/github/license/xpack/tsdoc2docusaurus-cli-ts.svg)](https://github.com/xpack/tsdoc2docusaurus-cli-ts/blob/master/LICENSE)
 [![GitHub issues](https://img.shields.io/github/issues/xpack/tsdoc2docusaurus-cli-ts.svg)](https://github.com/xpack/tsdoc2docusaurus-cli-ts/issues)
 [![GitHub pulls](https://img.shields.io/github/issues-pr/xpack/tsdoc2docusaurus-cli-ts.svg)](https://github.com/xpack/tsdoc2docusaurus-cli-ts/pulls/)

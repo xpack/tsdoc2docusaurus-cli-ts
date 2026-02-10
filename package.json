@@ -1,5 +1,5 @@
 {
-  "name": "@xpack/tsdoc2docusaurus",
+  "name": "@xpack/tsdoc2docusaurus-cli",
   "version": "1.3.1",
   "description": "A CLI application to convert TSDoc files into Docusaurus documentation",
   "type": "module",
