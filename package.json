@@ -9,6 +9,7 @@
     "tsdoc2docusaurus": "./bin/tsdoc2docusaurus.js"
   },
   "files": [
+    "bin/",
     "dist/",
     "template/"
   ],
