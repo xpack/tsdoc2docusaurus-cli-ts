@@ -1,45 +1,22 @@
-/*
- * This file is part of the xPack project (http://xpack.github.io).
- * Copyright (c) 2025 Liviu Ionescu. All rights reserved.
- *
- * Permission to use, copy, modify, and/or distribute this software
- * for any purpose is hereby granted, under the terms of the MIT license.
- *
- * If a copy of the license was not distributed with this file, it can
- * be obtained from https://opensource.org/licenses/MIT.
- */
-// ----------------------------------------------------------------------------
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { ViewModel } from './view-model/view-model.js';
-// ----------------------------------------------------------------------------
 export class Workspace {
-    // From the project docusaurus.config.ts or defaults.
     options;
     dataModel;
     viewModel;
-    // The tsdoc2docusaurus project path.
     projectPath;
-    // Like `/micro-os-plus/docs/api/`.
     absoluteBaseUrl;
-    // Like `/micro-os-plus/docs/api/`.
     pageBaseUrl;
-    // Like `/api/`.
     slugBaseUrl;
-    // Like `/docs/api/`.
     menuBaseUrl;
-    // Like `docs/api/`.
     outputFolderPath;
-    // like `api/`.
     sidebarBaseId;
     constructor(dataModel) {
         this.dataModel = dataModel;
         this.options = dataModel.options;
-        // Like .../tsdoc2docusaurus/dist/src/docusaurus/generator
         const __dirname = path.dirname(fileURLToPath(import.meta.url));
-        // tsdoc2docusaurus
         this.projectPath = path.dirname(path.dirname(__dirname));
-        // console.log(__dirname, this.projectPath)
         const docsFolderPath = this.options.docsFolderPath
             .replace(/^[/]/, '')
             .replace(/[/]$/, '');
@@ -64,5 +41,4 @@ export class Workspace {
         this.viewModel = new ViewModel(this);
     }
 }
-// ----------------------------------------------------------------------------
 //# sourceMappingURL=workspace.js.map

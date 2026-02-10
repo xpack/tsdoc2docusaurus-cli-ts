@@ -1,19 +1,7 @@
-/*
- * This file is part of the xPack project (http://xpack.github.io).
- * Copyright (c) 2025 Liviu Ionescu. All rights reserved.
- *
- * Permission to use, copy, modify, and/or distribute this software
- * for any purpose is hereby granted, under the terms of the MIT license.
- *
- * If a copy of the license was not distributed with this file, it can
- * be obtained from https://opensource.org/licenses/MIT.
- */
-// ----------------------------------------------------------------------------
 import assert from 'node:assert';
 import path from 'node:path';
 import * as fs from 'node:fs/promises';
 import { pluralise } from './utils.js';
-// ----------------------------------------------------------------------------
 export class DocusaurusGenerator {
     workspace;
     options;
@@ -35,21 +23,15 @@ export class DocusaurusGenerator {
         await this.copyCssFile();
         return 0;
     }
-    // https://nodejs.org/en/learn/manipulating-files/working-with-folders-in-nodejs
     async prepareOutputFolder() {
-        const { outputFolderPath } = this.workspace;
+        const outputFolderPath = this.workspace.outputFolderPath;
         try {
             await fs.access(outputFolderPath);
-            // Remove the folder if it exist.
             console.log(`Removing existing folder ${outputFolderPath}...`);
             await fs.rm(outputFolderPath, { recursive: true, force: true });
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         }
         catch (err) {
-            // The folder does not exist, nothing to remove.
         }
-        // Create the folder as empty.
-        // console.log(`Creating output folder ${outputFolderPath}...`)
         await fs.mkdir(outputFolderPath, { recursive: true });
     }
     async readInputFileLines(filePath) {
@@ -65,7 +47,6 @@ export class DocusaurusGenerator {
         header.push('');
         header.push(`slug: ${frontMatter.slug}`);
         const title = frontMatter.title.replace(/ typealias$/, ' type alias');
-        // console.log(frontMatter.title, '->', title)
         header.push(`title: ${title}`);
         header.push('custom_edit_url: null');
         header.push('---');
@@ -110,22 +91,19 @@ export class DocusaurusGenerator {
         let firstH2 = false;
         for (const line of lines) {
             if (line.startsWith('[Home](./index.md)')) {
-                continue; // Skip the home link
+                continue;
             }
             else if (!firstH2 && line.startsWith('## ')) {
                 firstH2 = true;
                 continue;
             }
             else if (line.startsWith('**Signature:**')) {
-                // Convert the signature line to a H2
                 outLines.push('## Signature');
             }
             else if (line.startsWith('**Returns:**')) {
-                // Convert the returns line to a H2
                 outLines.push('## Returns');
             }
             else {
-                // Patch links and other formatting
                 outLines.push(this.patchPermalinks(line, permalinksMapByPath));
             }
         }
@@ -135,20 +113,15 @@ export class DocusaurusGenerator {
         let patchedLine = line;
         const matches = [...line.matchAll(/\]\([^(<>)]*\)/g)];
         if (matches.length > 0) {
-            // console.log(matches)
             for (const match of matches) {
                 const link = match[0];
-                // Remove the leading `](` and trailing `)`
                 const linkPath = link.slice(2, -1);
                 if (linkPath.startsWith('./')) {
-                    // Relative link, patch it
                     const relativePath = linkPath.slice(2);
                     if (permalinksMapByPath.has(relativePath)) {
                         const permalink = permalinksMapByPath.get(relativePath);
                         assert(permalink !== undefined);
-                        // console.log(relativePath, '->', permalink)
                         patchedLine = patchedLine.replace(link, `](${permalink})`);
-                        // console.log(patchedLine)
                     }
                     else {
                         console.warn(`No permalink for ${relativePath}, skipping patch.`);
@@ -167,7 +140,7 @@ export class DocusaurusGenerator {
         const inputFolderPath = options.apiMarkdownInputFolderPath;
         const outputFolderPath = options.docsFolderPath + '/' + options.apiFolderPath;
         {
-            const { topIndex } = viewModel;
+            const topIndex = viewModel.topIndex;
             const lines = await this.readInputFileLines(`${inputFolderPath}/${topIndex.inputFilePath}`);
             const patchLinesLines = this.patchLines(lines, viewModel.permalinksMapByPath);
             const frontMatter = {
@@ -180,10 +153,8 @@ export class DocusaurusGenerator {
                 lines: patchLinesLines,
             });
         }
-        // ------------------------------------------------------------------------
-        const { entryPointsSet } = viewModel;
+        const entryPointsSet = viewModel.entryPointsSet;
         for (const entryPoint of entryPointsSet) {
-            // console.log(entryPoint)
             const lines = await this.readInputFileLines(`${inputFolderPath}/${entryPoint.inputFilePath}`);
             const patchLinesLines = this.patchLines(lines, viewModel.permalinksMapByPath);
             const frontMatter = {
@@ -197,7 +168,6 @@ export class DocusaurusGenerator {
                 lines: patchLinesLines,
                 toolVersion,
             });
-            // ----------------------------------------------------------------------
             for (const [kind, compoundsArray] of entryPoint.componentsMap) {
                 const title = pluralise(kind);
                 const compoundCategoryLabel = title.toLowerCase().replace(/ /g, '');
@@ -224,7 +194,6 @@ export class DocusaurusGenerator {
                     }
                     lines.push('<tr><td>');
                     lines.push('');
-                    // TODO: replace /docs with docsBaseUrl
                     lines.push(`[${compound.sidebarLabel}]` + `(/docs${compound.frontMatterSlug})`);
                     lines.push('');
                     lines.push(`</td><td>`);
@@ -244,62 +213,67 @@ export class DocusaurusGenerator {
                     toolVersion,
                 });
             }
-            // ----------------------------------------------------------------------
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             for (const [compoundKind, compoundsArray] of entryPoint.componentsMap) {
-                // console.log(`  ${compoundCategoryLabel}`)
                 for (const compound of compoundsArray) {
-                    // console.log(`    ${compound.label}`)
-                    const lines = await this.readInputFileLines(`${inputFolderPath}/${compound.inputFilePath}`);
-                    const patchLinesLines = this.patchLines(lines, viewModel.permalinksMapByPath);
-                    const frontMatter = {
-                        slug: compound.frontMatterSlug,
-                        title: compound.frontMatterTitle,
-                    };
-                    // TODO: Insert members into compound (future improvement).
-                    await this.writeOutputMdFile({
-                        filePath: `${outputFolderPath}/${compound.outputFilePath}`,
-                        frontMatter,
-                        lines: patchLinesLines,
+                    await this.generateComponentMdFilesRecursively({
+                        compound,
                         toolVersion,
                     });
-                    // ------------------------------------------------------------------
-                    if (compound.membersMap.size > 0) {
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                        for (const [memberKind, membersArray] of compound.membersMap) {
-                            for (const member of membersArray) {
-                                // if (member.isHidden === true) {
-                                //   continue
-                                // }
-                                // console.log(
-                                //   `      ${member.label} ${member.name} ${member.id}`
-                                // )
-                                const lines = await this.readInputFileLines(`${inputFolderPath}/${member.inputFilePath}`);
-                                const patchLinesLines = this.patchLines(lines, viewModel.permalinksMapByPath);
-                                const frontMatter = {
-                                    slug: member.frontMatterSlug,
-                                    title: member.frontMatterTitle,
-                                };
-                                await this.writeOutputMdFile({
-                                    filePath: `${outputFolderPath}/${member.outputFilePath}`,
-                                    frontMatter,
-                                    lines: patchLinesLines,
-                                    toolVersion,
-                                });
-                            }
-                        }
-                    }
                 }
             }
         }
         console.log(this.writtenFilesCount, 'files written');
     }
-    // --------------------------------------------------------------------------
+    async generateComponentMdFilesRecursively({ compound, toolVersion, }) {
+        const viewModel = this.workspace.viewModel;
+        const options = this.options;
+        const inputFolderPath = options.apiMarkdownInputFolderPath;
+        const outputFolderPath = options.docsFolderPath + '/' + options.apiFolderPath;
+        const lines = await this.readInputFileLines(`${inputFolderPath}/${compound.inputFilePath}`);
+        const patchLinesLines = this.patchLines(lines, viewModel.permalinksMapByPath);
+        const frontMatter = {
+            slug: compound.frontMatterSlug,
+            title: compound.frontMatterTitle,
+        };
+        await this.writeOutputMdFile({
+            filePath: `${outputFolderPath}/${compound.outputFilePath}`,
+            frontMatter,
+            lines: patchLinesLines,
+            toolVersion,
+        });
+        if (compound.componentsMap.size > 0) {
+            for (const [componentKind, componentsArray] of compound.componentsMap) {
+                for (const component of componentsArray) {
+                    await this.generateComponentMdFilesRecursively({
+                        compound: component,
+                        toolVersion,
+                    });
+                }
+            }
+        }
+        if (compound.membersMap.size > 0) {
+            for (const [memberKind, membersArray] of compound.membersMap) {
+                for (const member of membersArray) {
+                    const lines = await this.readInputFileLines(`${inputFolderPath}/${member.inputFilePath}`);
+                    const patchLinesLines = this.patchLines(lines, viewModel.permalinksMapByPath);
+                    const frontMatter = {
+                        slug: member.frontMatterSlug,
+                        title: member.frontMatterTitle,
+                    };
+                    await this.writeOutputMdFile({
+                        filePath: `${outputFolderPath}/${member.outputFilePath}`,
+                        frontMatter,
+                        lines: patchLinesLines,
+                        toolVersion,
+                    });
+                }
+            }
+        }
+    }
     generateSidebarCategory() {
         const viewModel = this.workspace.viewModel;
-        // const options = this.options
-        const { entryPointsSet } = this.workspace.viewModel;
-        const { topIndex } = viewModel;
+        const entryPointsSet = this.workspace.viewModel.entryPointsSet;
+        const topIndex = viewModel.topIndex;
         const sidebarTopCategory = {
             type: 'category',
             label: topIndex.sidebarLabel,
@@ -343,37 +317,36 @@ export class DocusaurusGenerator {
                 };
                 entryPointCategory.items.push(kindCategory);
                 for (const compound of compoundsArray) {
-                    const compoundCategory = {
-                        type: 'category',
-                        label: compound.sidebarLabel,
-                        link: {
-                            type: 'doc',
-                            id: compound.sidebarId,
-                        },
-                        className: 'tsdocEllipsis',
-                        collapsed: true,
-                        items: [],
-                    };
-                    kindCategory.items.push(compoundCategory);
-                    if (compound.membersMap.size > 0) {
-                        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-                        for (const [memberKind, membersArray] of compound.membersMap) {
-                            for (const member of membersArray) {
-                                // Explicitly handle nullable boolean for isHidden
-                                // if (member.isHidden === true) {
-                                // console.warn(
-                                //   `Skipping member without name in ${compoundLabel}: ` +
-                                //   `${member.data.canonicalReference}`
-                                // );
-                                //  continue
-                                // }
-                                const memberDoc = {
-                                    type: 'doc',
-                                    label: member.sidebarLabel,
+                    kindCategory.items.push(this.generateSidebarCategoryRecursively({
+                        kind,
+                        compound,
+                    }));
+                }
+                for (const [cousinKind, cousinCompoundsArray,] of entryPoint.componentsMap) {
+                    if (cousinKind !== kind) {
+                        for (const cousinCompound of cousinCompoundsArray) {
+                            if (cousinCompound.componentsMap.has(kind)) {
+                                const compoundCategory2 = {
+                                    type: 'category',
+                                    label: cousinCompound.sidebarLabel,
+                                    link: {
+                                        type: 'doc',
+                                        id: cousinCompound.sidebarId,
+                                    },
                                     className: 'tsdocEllipsis',
-                                    id: member.sidebarId,
+                                    collapsed: true,
+                                    items: [],
                                 };
-                                compoundCategory.items.push(memberDoc);
+                                if (cousinCompound.componentsMap.has(kind)) {
+                                    for (const child of cousinCompound.componentsMap.get(kind) ??
+                                        []) {
+                                        compoundCategory2.items.push(this.generateSidebarCategoryRecursively({
+                                            kind,
+                                            compound: child,
+                                        }));
+                                    }
+                                }
+                                kindCategory.items.push(compoundCategory2);
                             }
                         }
                     }
@@ -382,27 +355,84 @@ export class DocusaurusGenerator {
         }
         return sidebarTopCategory;
     }
+    generateSidebarCategoryRecursively({ kind, compound, }) {
+        const compoundCategory = {
+            type: 'category',
+            label: compound.sidebarLabel,
+            link: {
+                type: 'doc',
+                id: compound.sidebarId,
+            },
+            className: 'tsdocEllipsis',
+            collapsed: true,
+            items: [],
+        };
+        if (compound.componentsMap.has(kind)) {
+            for (const child of compound.componentsMap.get(kind) ?? []) {
+                compoundCategory.items.push(this.generateSidebarCategoryRecursively({
+                    kind,
+                    compound: child,
+                }));
+            }
+        }
+        if (compound.membersMap.size > 0) {
+            for (const [memberKind, membersArray] of compound.membersMap) {
+                for (const member of membersArray) {
+                    const memberDoc = {
+                        type: 'doc',
+                        label: member.sidebarLabel,
+                        className: 'tsdocEllipsis',
+                        id: member.sidebarId,
+                    };
+                    compoundCategory.items.push(memberDoc);
+                }
+            }
+        }
+        return compoundCategory;
+    }
     generateNavbarItem() {
+        const viewModel = this.workspace.viewModel;
         const options = this.options;
+        const items = [];
+        const entryPointsSet = viewModel.entryPointsSet;
+        if (entryPointsSet.size > 1) {
+            for (const entryPoint of entryPointsSet) {
+                const url = `/${options.docsBaseUrl}${entryPoint.frontMatterSlug}`;
+                const navbarItem = {
+                    label: entryPoint.sidebarLabel,
+                    to: url,
+                };
+                items.push(navbarItem);
+            }
+        }
+        else {
+            const entryPoint = [...entryPointsSet][0];
+            for (const [kind, compoundsArray] of entryPoint.componentsMap) {
+                const compoundCategoryLabel = pluralise(kind);
+                const url = `/${options.docsBaseUrl}/${options.apiBaseUrl}/${entryPoint.id}/` +
+                    compoundCategoryLabel.toLowerCase().replace(/ /g, '');
+                const navbarItem = {
+                    label: compoundCategoryLabel,
+                    to: url,
+                };
+                items.push(navbarItem);
+            }
+        }
         const navbarItem = {
             label: options.navbarLabel,
             position: options.navbarPosition,
             to: `/${options.docsBaseUrl}/${options.apiBaseUrl}`,
+            items,
         };
         return navbarItem;
     }
-    // --------------------------------------------------------------------------
     async writeSidebarFile(sidebarCategory) {
-        // console.log(util.inspect(sidebar, { compact: false, depth: 999 }));
-        // Write the sidebar to file.
         const sidebarFilePath = this.options.sidebarCategoryFilePath;
         console.log(`Writing sidebar file ${sidebarFilePath}...`);
         const sidebarJson = JSON.stringify(sidebarCategory, null, 2);
         await fs.writeFile(sidebarFilePath, sidebarJson);
     }
     async writeNavbarFile(navbarItem) {
-        // console.log(util.inspect(navbarItem, { compact: false, depth: 999 }));
-        // Write the sidebar to file.
         const navbarFilePath = this.options.navbarFilePath;
         console.log(`Writing navbar file ${navbarFilePath}...`);
         const navbarJson = JSON.stringify(navbarItem, null, 2);
@@ -416,5 +446,4 @@ export class DocusaurusGenerator {
         await fs.copyFile(fromFilePath, toFilePath);
     }
 }
-// ----------------------------------------------------------------------------
 //# sourceMappingURL=generator.js.map
