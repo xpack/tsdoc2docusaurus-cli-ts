@@ -33,7 +33,7 @@ and requires the original comments not be removed. For this be sure
 the `compilerOptions.removeComments` is **not** defined in the
 `website/config/tsconfig-api-extractor.json`!
 
-```json
+```jsonc
   "compilerOptions": {
     "outDir": "../tsdoc/dist",
     // api-extractor reads the documentation from the comments in the compiled files.
