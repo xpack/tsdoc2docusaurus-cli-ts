@@ -14,6 +14,7 @@ export default tseslint.config({
     tseslint.configs.stylisticTypeChecked,
     prettierConfig,
   ],
+  ignores: [ ],
   rules: {
     'max-len': [
       'warn',
@@ -21,7 +22,7 @@ export default tseslint.config({
       {
         ignoreUrls: true,
         ignorePattern:
-          '^\\s*// eslint-disable-next-line|^\\s*import\\s+\\{[^}]+\\}\\s+from\\s+[\'"][^\'"]+[\'"]|^\\s*import\\s+type\\s+\\{[^}]+\\}\\s+from\\s+[\'"][^\'"]+[\'"]|^export class .+ extends .+\\{$',
+          '^\\s*// eslint-disable-next-line|^\\s*// console\\.log|^\\s*//\\s*<xsd:|^\\s*import\\s+\\{[^}]+\\}\\s+from\\s+[\'"][^\'"]+[\'"]|^\\s*import\\s+type\\s+\\{[^}]+\\}\\s+from\\s+[\'"][^\'"]+[\'"]|^export class .+ extends .+\\{$',
       },
     ],
   },
