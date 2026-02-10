@@ -11,25 +11,49 @@ Work in progress.
 ## Prerequisites
 
 ```ts
-npm install @microsoft/api-extractor --save-dev
-npm --prefix website @microsoft/api-documenter --save-dev
+npm --prefix website @microsoft/api-extractor @microsoft/api-documenter --save-dev
 ```
 
-In project `package.json`
+In  `website/package.json`
 
-```ts
+```json
+    "compile-tsdoc": "del-cli --force tsdoc/dist && tsc --project config/tsconfig-api-extractor.json",
+    "api-extractor-init": "api-extractor init",
     "api-extractor": "api-extractor run --local --verbose",
+    "patch-doc-model-json": "bash config/patch-doc-model-json.sh tsdoc/doc-model/website.api.json website @xpack/xpm-lib",
+    "api-documenter": "del-cli --force tsdoc/markdown && api-documenter markdown --input-folder tsdoc/doc-model --output-folder tsdoc/markdown",
+    "tsdoc2docusaurus": "tsdoc2docusaurus --id website",
+    "generate-website-tsdoc": "npm run compile-tsdoc && npm run api-extractor && npm run patch-doc-model-json && npm run api-documenter && npm run tsdoc2docusaurus",
 ```
 
-In website `pacakge.json`
+### TypeScript configuration
 
-```ts
-    "api-documenter": "del-cli --force ../api-extractor/markdown && api-documenter markdown --input-folder ../api-extractor --output-folder ../api-extractor/markdown",
-    "convert-tsdoc-webpreview": "tsdoc2docusaurus --id webpreview",
-    "generate-api": "npm run api-documenter && npm run convert-tsdoc-webpreview",
-    "convert-tsdoc-website": "tsdoc2docusaurus --id website",
+`api-extractor` starts the project parsing from the compiled `index.d.ts`,
+and requires the original comments not be removed. For this be sure
+the `compilerOptions.removeComments` is **not** defined in the
+`website/config/tsconfig-api-extractor.json`!
+
+```json
+  "compilerOptions": {
+    "outDir": "../tsdoc/dist",
+    // api-extractor reads the documentation from the comments in the compiled files.
+    "removeComments": false, 
+    // To show internal docs in the generated API reference.
+    "stripInternal": false,
+    // Only output d.ts files and not JavaScript files.
+    "emitDeclarationOnly": true,
+    // https://api-extractor.com/pages/setup/invoking/
+    // This enables generation of the .d.ts files that API Extractor will 
+    // analyze. By design, TypeScript source files are not directly analyzed, 
+    // but instead must be first processed by your compiler.
+    "declaration": true,
+    // This enables generation of .d.ts.map files that allow API Extractor 
+    // errors to be reported using line numbers from your original source 
+    // files; without this, the error locations will instead refer to the 
+    // generated .d.ts files.
+    "declarationMap": true, 
+    "sourceMap": false,
 ```
-
 
 ### The api-extractor configuration
 
@@ -37,46 +61,48 @@ Add the `config/api-extractor.json` file.
 
 ```json
 {
-  "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
+  "mainEntryPointFilePath": "<projectFolder>/tsdoc/dist/index.d.ts",
+  "bundledPackages": [],
   "compiler": {
-    "tsconfigFilePath": "<projectFolder>/src/tsconfig.json",
+    "tsconfigFilePath": "<projectFolder>/config/tsconfig-api-extractor.json"
   },
   "apiReport": {
-    "enabled": true,
-    "reportTempFolder": "<projectFolder>/api-extractor/",
-    "includeForgottenExports": true
+    "enabled": false
   },
   "docModel": {
     "enabled": true,
-    "apiJsonFilePath": "<projectFolder>/api-extractor/<unscopedPackageName>.api.json",
+    "apiJsonFilePath": "<projectFolder>/tsdoc/doc-model/website.api.json",
     "includeForgottenExports": true,
     "projectFolderUrl": "https://github.com/xpack/xpm-lib-ts.git/tree/development"
+  },
+  "dtsRollup": {
+    "enabled": false
+  },
+  "tsdocMetadata": {
+    "enabled": false
+  },
+  "messages": {
+    "compilerMessageReporting": {
+      "default": {
+        "logLevel": "warning"
+      }
+    },
+    "extractorMessageReporting": {
+      "ae-missing-release-tag": {
+        "logLevel": "none"
+      },
+      "default": {
+        "logLevel": "warning"
+      }
+    },
+    "tsdocMessageReporting": {
+      "default": {
+        "logLevel": "warning"
+      }
+    }
   }
 }
 ```
-
-`api-extractor` starts the project parsing from the compiled `index.d.ts`,
-and requires the original comments not be removed. For this be sure
-the `compilerOptions.removeComments` is **not** defined in the top
-`tsconfig.json`, for example:
-
-```json
-{
-  "extends": "@tsconfig/node20/tsconfig.json",
-  "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig to read more about this file */
-    /* https://www.npmjs.com/package/@tsconfig/node20 */
-
-    "declaration": true,
-    "declarationMap": true,
-    "sourceMap": true,
-    // "removeComments": true,
-
-    "forceConsistentCasingInFileNames": true,
-  }
-}
-```
-
 
 ## Installing the Converter
 
@@ -108,11 +134,18 @@ For example:
 
 ```json
 {
-  "apiJsonInputFolderPath": "../api-extractor",
-  "apiMarkdownInputFolderPath": "../api-extractor/markdown",
-  "baseUrl": "/my-project-ts/",
-  "verbose": true,
-  "debug": false
+    "apiJsonInputFolderPath": "tsdoc/doc-model",
+    "apiMarkdownInputFolderPath": "tsdoc/markdown",
+    "apiFolderPath": "api",
+    "baseUrl": "/xpm-lib-ts/",
+    "apiBaseUrl": "api",
+    "navbarFilePath": "docusaurus-config-navbar-tsdoc.json",
+    "sidebarCategoryFilePath": "sidebar-category-tsdoc.json",
+    "customCssFilePath": "src/css/custom-tsdoc2docusaurus.css",
+    "navbarLabel": "API Reference",
+    "navbarPosition": "left",
+    "verbose": false,
+    "debug": false
 }
 ```
 
@@ -124,8 +157,14 @@ To simplify running the conversion, add a npm script to your `website/package.js
 
 ```json
   "scripts": {
+    "compile-tsdoc": "del-cli --force tsdoc/dist && tsc --project config/tsconfig-api-extractor.json",
+    "api-extractor-init": "api-extractor init",
+    "api-extractor": "api-extractor run --local --verbose",
+    "patch-doc-model-json": "bash config/patch-doc-model-json.sh tsdoc/doc-model/website.api.json website @xpack/xpm-lib",
+    "api-documenter": "del-cli --force tsdoc/markdown && api-documenter markdown --input-folder tsdoc/doc-model --output-folder tsdoc/markdown",
+    "tsdoc2docusaurus": "tsdoc2docusaurus --id website",
+    "generate-website-tsdoc": "npm run compile-tsdoc && npm run api-extractor && npm run patch-doc-model-json && npm run api-documenter && npm run tsdoc2docusaurus",
     "docusaurus": "docusaurus",
-    "convert-tsdoc": "tsdoc2docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
     ...
