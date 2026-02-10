@@ -34,25 +34,27 @@ export interface Base {
 export interface NodeWithComponents extends Base {
   // Map of array of components, by kind (Class, Interface, ...)
   componentsMap: Map<string, Component[]>
+
+  dataModel: DataModelMember
 }
 
 export interface EntryPoint extends NodeWithComponents {
   toolVersion: string
 
   id: string
-
-  dataModel: DataModelMember
 }
 
 export interface Component extends NodeWithComponents {
+  parent: NodeWithComponents
+
   // Map of array of members, by kind (Constructor, Property, ...)
   membersMap: Map<string, Member[]>
-
-  dataModel: DataModelMember
 }
 
 // Leaf node, no component children.
 export interface Member extends Base {
+  parent: Component
+
   dataModel: DataModelMember
 }
 

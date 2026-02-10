@@ -129,6 +129,7 @@ export class ViewModel {
             dataModel: entryPointDataModel,
           }
           entryPointsSet.add(entryPoint)
+
           if (entryPointDataModel.members) {
             for (const componentDataModel of entryPointDataModel.members) {
               this.createComponentRecursively({
@@ -253,6 +254,8 @@ export class ViewModel {
       summary: componentSummary,
 
       dataModel: componentDataModel,
+
+      parent: parentNode,
     }
 
     let componentsArray = parentNode.componentsMap.get(componentDataModel.kind)
@@ -286,6 +289,13 @@ export class ViewModel {
             depth: depth + 1,
           })
         }
+      }
+    }
+
+    for (const [kind, _] of component.componentsMap) {
+      // Process each component kind
+      if (!parentNode.componentsMap.has(kind)) {
+        parentNode.componentsMap.set(kind, [])
       }
     }
   }
@@ -407,6 +417,7 @@ export class ViewModel {
       outputFilePath,
 
       dataModel: memberDataModel,
+      parent: component,
     }
 
     // if (memberId === undefined) {
