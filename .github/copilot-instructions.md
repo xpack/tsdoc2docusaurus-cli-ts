@@ -12,9 +12,9 @@
 - Maintain consistency in terminology throughout the codebase
 - Prefer "folder" to "directory"
 
-## Code Style
+## TypeScript Code Style
 
-- Follow the existing ESlint TypeScript conventions in this project (`typescript-eslint` rules)
+- Follow the existing ESlint TypeScript conventions (the rules defined by the `typescript-eslint` and `prettier` projects)
 - Use consistent formatting and naming conventions based on prettier and ESLint configurations
 
 ## Documentation
@@ -29,6 +29,7 @@
 - Use `@param` and `@returns` tags appropriately in TSDoc comments; place `@param` tags immediately after the summary and before `@returns`
 - Use `@throws {@link ExceptionName}` for exceptions and place the descriptions on the next line; place these tags after `@returns`
 - Precede `@throws` tags with an empty line, and place the description on the next line
+- Do not documnent exceptions thrown by assertions
 - Do not add `@public` or `@internal` tags 
 - When generating lists in TSDoc `@remarks` comments, use html `<ol>` and `<li>` tags for ordered lists, and `<ul>` and `<li>` tags for unordered lists. 
 - inside html lists, do not use markdown syntax for bold or italics, use `<b>`, `<i>` html tags instead
@@ -40,6 +41,5 @@
 ## Folder Structure
 
 - `/src`: Contains the TypeScript source code
-- `/dist`: Contains the compiled JavaScript output
-- `/tests`: Contains the test suites and test cases (if applicable)
-- `/website`: Contains the project documentation and guides (if applicable)
+- `/tests`: Contains the test suites and test cases
+- `/templates`: Contains any template files used for code generation or project scaffolding

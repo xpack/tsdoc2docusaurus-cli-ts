@@ -1,0 +1,14 @@
+{
+  "descriptiveName": "A CLI application to convert TSDoc files into Docusaurus documentation",
+  "permalinkName": "tsdoc2docusaurus-ts",
+  "preferredName": "A CLI application to convert TSDoc files into Docusaurus documentation",
+  "programName": "tsdoc2docusaurus",
+  "hasCli": true,
+  "hasNoGithubReleases": true,
+  "preferShortName": true,
+  "skipCiTests": true,
+  "useEslint": true,
+  "usePrettier": true,
+  "useTypescriptEslint": true,
+  "isTypescript": true
+}
